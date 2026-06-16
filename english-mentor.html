@@ -930,28 +930,53 @@ function switchTab(n){
 async function generateReading(){
   const topic=document.getElementById('reading-topic').value,lv=getLevel();
   const topicMap={daily:'daily life situations in London, including transport, shopping, work and social life',news:'current global news and affairs',science:'science and technology developments',culture:'arts, culture, films, music and entertainment',business:'business, work, careers and economics',ielts:'an IELTS Academic reading passage'};
-  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only. Think beginner news article.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and some less frequent words. Clear simple structure.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC weekend style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures. Quality journalism style.','C1':'Use C1 vocabulary with nuance and sophistication. Complex argumentation. Long-form journalism quality.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary. Complex argument with subtlety.'};
+  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and less frequent words.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures.','C1':'Use C1 vocabulary with nuance. Complex argumentation.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary.'};
   document.getElementById('reading-body').innerHTML='<div style="padding:60px;text-align:center;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:13px">Generating '+lv+' level text...</p></div>';
   try{
-    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.
-Language level: ${lv}. ${lvInstr[lv]}
-Length: 350-450 words.
-Format ONLY as JSON (no other text): {"title":"...","paragraphs":["p1","p2","p3","p4"],"highlight_words":["w1","w2","w3","w4","w5"]}
-highlight_words = 5 useful vocabulary words from the passage appropriate for ${lv} level learners.`);
-    const cleaned=res.replace(/```json|```/g,"").trim();const data=JSON.parse(cleaned);
-    document.getElementById('reading-title').textContent=data.title;
-    document.getElementById('fs-title').textContent=data.title;
-    let html=`<h2>${data.title}</h2>`;
-    data.paragraphs.forEach(p=>{
-      let proc=p;
-      data.highlight_words.forEach(w=>{const re=new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');proc=proc.replace(re,`<span class="word-highlight" onclick="showWordHint('${w}',event)">${w}</span>`);});
+    const prompt=`Write an English reading passage about ${topicMap[topic]}. Language level: ${lv}. ${lvInstr[lv]}
+
+Format your response EXACTLY like this (keep the TITLE: and WORDS: markers):
+
+TITLE: [title here]
+
+[paragraph 1]
+
+[paragraph 2]
+
+[paragraph 3]
+
+[paragraph 4]
+
+WORDS: word1, word2, word3, word4, word5
+
+The WORDS line should list 5 useful vocabulary words from the passage. Write 350-450 words total.`;
+    const res=await callClaude(prompt);
+    const titleMatch=res.match(/TITLE:\s*(.+)/);
+    const wordsMatch=res.match(/WORDS:\s*(.+)/);
+    const title=titleMatch?titleMatch[1].trim():'Reading Passage';
+    const words=wordsMatch?wordsMatch[1].split(',').map(w=>w.trim()).filter(w=>w.length>0):[];
+    const body=res.replace(/TITLE:.*\n?/,'').replace(/WORDS:.*$/m,'').trim();
+    const paragraphs=body.split(/\n\n+/).filter(p=>p.trim().length>0);
+    document.getElementById('reading-title').textContent=title;
+    document.getElementById('fs-title').textContent=title;
+    let html=`<h2>${title}</h2>`;
+    paragraphs.forEach(p=>{
+      let proc=p.trim();
+      words.forEach(w=>{
+        if(!w) return;
+        const re=new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');
+        proc=proc.replace(re,`<span class="word-highlight" onclick="showWordHint('${w}',event)">${w}</span>`);
+      });
       html+=`<p>${proc}</p>`;
     });
-    html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)"><p style="font-size:12px;color:var(--text-muted)">Click highlighted words for meaning &middot; <button onclick='saveHighlightedWords(${JSON.stringify(data.highlight_words)})' style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline">Save all to dictionary</button></p></div>`;
+    if(words.length>0){
+      html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)"><p style="font-size:12px;color:var(--text-muted)">Click highlighted words for meaning &middot; <button onclick='saveHighlightedWords(${JSON.stringify(words)})' style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline">Save all to dictionary</button></p></div>`;
+    }
     document.getElementById('reading-body').innerHTML=html;
     document.getElementById('fs-body').innerHTML=html;
-    // markDone('reading') — only when timer completes
-  }catch(e){document.getElementById('reading-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error generating text. Check your API key.</div>';}
+  }catch(e){
+    document.getElementById('reading-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error: '+e.message+'</div>';
+  }
 }
 
 async function showWordHint(word,e){

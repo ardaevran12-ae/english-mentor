@@ -94,7 +94,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .reading-body{flex:1;padding:32px 20px;max-width:680px;margin:0 auto;width:100%;overflow-y:auto;}
 .reading-body h2{font-family:'Lora',serif;font-size:19px;font-weight:600;margin-bottom:16px;line-height:1.4;}
 .reading-body p{font-family:'Lora',serif;font-size:15px;line-height:1.85;color:#2a2a28;margin-bottom:13px;}
-.word-highlight{background:#ffe58a;border-radius:2px;cursor:pointer;padding:0 1px;}
+.word-highlight{background:#ffe58a;border-radius:2px;cursor:pointer;padding:0 1px;}.clickable-word{cursor:pointer;border-radius:2px;transition:background .1s;}.clickable-word:hover{background:#f0f0e8;}
 .word-hint{position:fixed;background:var(--text);color:#fff;padding:8px 11px;border-radius:var(--radius);font-size:12px;pointer-events:none;z-index:500;display:none;max-width:220px;line-height:1.5;}
 .reading-placeholder{text-align:center;padding:70px 20px;color:var(--text-muted);}
 .reading-placeholder .ph-icon{font-size:34px;margin-bottom:12px;}
@@ -933,31 +933,92 @@ async function generateReading(){
   const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only. Think beginner news article.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and less frequent words. Clear simple structure.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC weekend style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures. Quality journalism style.','C1':'Use C1 vocabulary with nuance and sophistication. Complex argumentation. Long-form journalism quality.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary. Complex argument with subtlety.'};
   document.getElementById('reading-body').innerHTML='<div style="padding:60px;text-align:center;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:13px">Generating '+lv+' level text...</p></div>';
   try{
-    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.\nLanguage level: ${lv}. ${lvInstr[lv]}\nLength: 350-450 words.\nYou MUST respond with ONLY a raw JSON object. No markdown, no backticks, no explanation before or after. Start your response with { and end with }.\nJSON structure: {"title":"...","paragraphs":["p1","p2","p3","p4"],"highlight_words":["w1","w2","w3","w4","w5"]}\nhighlight_words = 5 useful vocabulary words from the passage appropriate for ${lv} level learners.`);
+    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.\nLanguage level: ${lv}. ${lvInstr[lv]}\nLength: 350-450 words.\nYou MUST respond with ONLY a raw JSON object. No markdown, no backticks, no explanation before or after. Start your response with { and end with }.\nJSON structure: {"title":"...","paragraphs":["p1","p2","p3","p4"],"highlight_words":["w1","w2","w3","w4","w5"]}\nhighlight_words = 5 key vocabulary words from the passage appropriate for ${lv} level learners.`);
     let cleaned=res.trim();
-    if(cleaned.startsWith('```')){cleaned=cleaned.replace(/^```(json)?/,'').replace(/```$/,'').trim();}
-    const start=cleaned.indexOf('{');
-    const end=cleaned.lastIndexOf('}');
-    if(start===-1||end===-1) throw new Error('No JSON found in response');
-    const data=JSON.parse(cleaned.substring(start,end+1));
+    if(cleaned.startsWith('`')){cleaned=cleaned.replace(/^```(json)?/,'').replace(/```$/,'').trim();}
+    const si=cleaned.indexOf('{'),ei=cleaned.lastIndexOf('}');
+    if(si===-1||ei===-1) throw new Error('No JSON found');
+    const data=JSON.parse(cleaned.substring(si,ei+1));
+    window._currentReadingText=data.paragraphs.join(' ');
+    window._highlightWords=data.highlight_words||[];
     document.getElementById('reading-title').textContent=data.title;
     document.getElementById('fs-title').textContent=data.title;
     let html=`<h2>${data.title}</h2>`;
+    // Make ALL words clickable, highlight the 5 key words
     data.paragraphs.forEach(p=>{
-      let proc=p;
-      data.highlight_words.forEach(w=>{
-        if(!w) return;
-        const re=new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');
-        proc=proc.replace(re,`<span class="word-highlight" onclick="showWordHint('${w}',event)">${w}</span>`);
-      });
-      html+=`<p>${proc}</p>`;
+      const words=p.split(/(\s+)/);
+      const wordHtml=words.map(token=>{
+        if(/^\s+$/.test(token)) return token;
+        const clean=token.replace(/[.,!?;:'"()\[\]]/g,'');
+        const isHighlighted=data.highlight_words.some(w=>w&&w.toLowerCase()===clean.toLowerCase());
+        const display=isHighlighted?`<span class="word-highlight clickable-word" onclick="showWordHint('${clean}',event)">${token}</span>`:`<span class="clickable-word" onclick="showWordHint('${clean}',event)">${token}</span>`;
+        return display;
+      }).join('');
+      html+=`<p>${wordHtml}</p>`;
     });
-    html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)"><p style="font-size:12px;color:var(--text-muted)">Click highlighted words for meaning &middot; <button onclick='saveHighlightedWords(${JSON.stringify(data.highlight_words)})' style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline">Save all to dictionary</button></p></div>`;
+    html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button onclick="speakText(window._currentReadingText)" style="padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊 Listen to text</button>
+      <button onclick="startPronunciationCheck()" style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;" id="pronun-btn">🎤 Read aloud & check pronunciation</button>
+      <button onclick='saveHighlightedWords(window._highlightWords)' style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline;font-family:Inter,sans-serif;">Save key words to dictionary</button>
+    </div>
+    <div id="pronun-result" style="margin-top:12px;display:none;"></div>`;
     document.getElementById('reading-body').innerHTML=html;
     document.getElementById('fs-body').innerHTML=html;
   }catch(e){
     document.getElementById('reading-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error: '+e.message+'</div>';
   }
+}
+
+let pronunciationRec=null,isPronRecording=false;
+function startPronunciationCheck(){
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){showToast('Speech recognition not supported. Use Chrome.');return;}
+  const btn=document.getElementById('pronun-btn');
+  if(isPronRecording){
+    if(pronunciationRec) pronunciationRec.stop();
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  pronunciationRec=new SR();
+  pronunciationRec.continuous=true;
+  pronunciationRec.interimResults=false;
+  pronunciationRec.lang='en-GB';
+  pronunciationRec.maxAlternatives=1;
+  let transcript='';
+  pronunciationRec.onresult=e=>{
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) transcript+=e.results[i][0].transcript+' ';
+    }
+  };
+  pronunciationRec.onend=async()=>{
+    isPronRecording=false;
+    btn.textContent='🎤 Read aloud & check pronunciation';
+    btn.style.background='var(--accent)';
+    if(!transcript.trim()){showToast('No speech detected. Try again.');return;}
+    const result=document.getElementById('pronun-result');
+    result.style.display='block';
+    result.innerHTML='<div style="padding:12px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text-muted)">Analysing your pronunciation...</div>';
+    const original=window._currentReadingText||'';
+    try{
+      const feedback=await callClaude(`Compare this original English text with what the student read aloud. The student is a Turkish speaker at ${getLevel()} level learning English.
+
+ORIGINAL TEXT: "${original.substring(0,500)}"
+STUDENT READ: "${transcript.trim()}"
+
+Give brief pronunciation and reading feedback:
+1. Accuracy score (X/10)
+2. Words they skipped or mispronounced (list up to 5)
+3. What they did well
+4. 1 tip for improvement
+
+Keep it encouraging and brief (max 150 words).`);
+      result.innerHTML=`<div style="padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);font-size:12px;line-height:1.7;">${feedback.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
+    }catch(e){result.innerHTML='<div style="padding:12px;color:var(--red);font-size:12px">Error analysing pronunciation.</div>';}
+  };
+  pronunciationRec.start();
+  isPronRecording=true;
+  btn.textContent='⏹ Stop recording';
+  btn.style.background='var(--red)';
+  showToast('Recording... read the text aloud, then press Stop');
 }
 
 async function showWordHint(word,e){
@@ -1018,7 +1079,7 @@ IMPORTANT RULES:
   showTyping();
   try{
     const reply=await callClaude(text,system,chatHistory.slice(-10));
-    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});
+    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});speakText(reply);
   }catch(e){removeTyping();addMsg('assistant','Connection error. Please check your API key.');}
 }
 

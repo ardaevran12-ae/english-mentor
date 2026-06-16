@@ -22,8 +22,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-primary{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
 .btn-primary:hover{background:var(--accent-mid);}
 #api-error{color:var(--red);font-size:12px;margin-top:8px;display:none;}
-#app{display:none;flex-direction:column;min-height:100vh;}
-#app.visible{display:flex;}
+#app{display:none;flex-direction:column;height:100vh;}
+#app.visible{display:flex;overflow:hidden;}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;}
 .nav-brand{font-size:14px;font-weight:600;color:var(--accent);padding:14px 14px 14px 0;border-right:1px solid var(--border);margin-right:6px;white-space:nowrap;}
 .nav-tabs{display:flex;flex:1;overflow-x:auto;}
@@ -35,8 +35,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .level-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);}
 .btn-sm{padding:5px 10px;font-size:11px;font-weight:500;border-radius:var(--radius);cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);font-family:'Inter',sans-serif;}
 .btn-sm.mock{background:var(--blue);color:#fff;border-color:var(--blue);}
-.tab-content{display:none;flex:1;}
-.tab-content.active{display:flex;flex-direction:column;}
+.tab-content{display:none;flex:1;overflow:hidden;}
+.tab-content.active{display:flex;flex-direction:column;overflow:hidden;}
 .page-inner{padding:24px;max-width:860px;margin:0 auto;width:100%;overflow-y:auto;}
 .dash-header{margin-bottom:20px;}
 .dash-header h2{font-size:19px;font-weight:600;margin-bottom:3px;}
@@ -183,7 +183,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .vi-ex{font-size:10px;color:var(--text-muted);font-style:italic;margin-top:2px;}
 .vi-del{padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;font-size:10px;color:var(--text-light);}
 .vi-del:hover{background:var(--red-light);color:var(--red);border-color:var(--red);}
-.vocab-empty{text-align:center;padding:36px;color:var(--text-muted);font-size:12px;}
+.vocab-empty{text-align:center;padding:36px;color:var(--text-muted);font-size:12px;}.flashcard{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:40px 24px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all .2s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;}.flashcard:hover{border-color:var(--accent);box-shadow:var(--shadow-md);}.flashcard .fc-word{font-size:26px;font-weight:600;color:var(--accent);margin-bottom:8px;}.flashcard .fc-hint{font-size:12px;color:var(--text-light);}.flashcard .fc-answer{font-size:14px;line-height:1.6;color:var(--text);margin-top:16px;display:none;}.fc-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;}.fc-counter{font-size:12px;color:var(--text-muted);}
 .grammar-header{margin-bottom:18px;}
 .grammar-header h3{font-size:14px;font-weight:600;margin-bottom:3px;}
 .grammar-header p{font-size:12px;color:var(--text-muted);}
@@ -469,7 +469,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
         </div>
       </div>
       <div class="vocab-filter">
-        <button class="filter-btn active" onclick="filterVocab('all',this)">All</button>
+        <button class="filter-btn active" onclick="filterVocab('all',this)">All Words</button>
         <button class="filter-btn" onclick="filterVocab('recent',this)">Recent</button>
       </div>
       <div class="vocab-list" id="vocab-list"><div class="vocab-empty">No words yet. Add some above or save from reading!</div></div>
@@ -930,36 +930,32 @@ function switchTab(n){
 async function generateReading(){
   const topic=document.getElementById('reading-topic').value,lv=getLevel();
   const topicMap={daily:'daily life situations in London, including transport, shopping, work and social life',news:'current global news and affairs',science:'science and technology developments',culture:'arts, culture, films, music and entertainment',business:'business, work, careers and economics',ielts:'an IELTS Academic reading passage'};
-  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only. Think beginner news article.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and less frequent words. Clear simple structure.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC weekend style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures. Quality journalism style.','C1':'Use C1 vocabulary with nuance and sophistication. Complex argumentation. Long-form journalism quality.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary. Complex argument with subtlety.'};
+  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and less frequent words.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures.','C1':'Use C1 vocabulary with nuance. Complex argumentation.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary.'};
   document.getElementById('reading-body').innerHTML='<div style="padding:60px;text-align:center;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:13px">Generating '+lv+' level text...</p></div>';
   try{
-    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.\nLanguage level: ${lv}. ${lvInstr[lv]}\nLength: 350-450 words.\nYou MUST respond with ONLY a raw JSON object. No markdown, no backticks, no explanation before or after. Start your response with { and end with }.\nJSON structure: {"title":"...","paragraphs":["p1","p2","p3","p4"],"highlight_words":["w1","w2","w3","w4","w5"]}\nhighlight_words = 5 key vocabulary words from the passage appropriate for ${lv} level learners.`);
+    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.\nLanguage level: ${lv}. ${lvInstr[lv]}\nLength: 350-450 words.\nYou MUST respond with ONLY a raw JSON object. No markdown, no backticks, no explanation. Start with { end with }.\nJSON: {"title":"...","paragraphs":["p1","p2","p3","p4"]}`);
     let cleaned=res.trim();
     if(cleaned.startsWith('`')){cleaned=cleaned.replace(/^```(json)?/,'').replace(/```$/,'').trim();}
     const si=cleaned.indexOf('{'),ei=cleaned.lastIndexOf('}');
     if(si===-1||ei===-1) throw new Error('No JSON found');
     const data=JSON.parse(cleaned.substring(si,ei+1));
     window._currentReadingText=data.paragraphs.join(' ');
-    window._highlightWords=data.highlight_words||[];
     document.getElementById('reading-title').textContent=data.title;
     document.getElementById('fs-title').textContent=data.title;
-    let html=`<h2>${data.title}</h2>`;
-    // Make ALL words clickable, highlight the 5 key words
+    let html=`<h2>${data.title}</h2><p style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">💡 Click any word to see its meaning. Click again to save it to your dictionary.</p>`;
     data.paragraphs.forEach(p=>{
-      const words=p.split(/(\s+)/);
-      const wordHtml=words.map(token=>{
+      const tokens=p.split(/(\s+)/);
+      const wordHtml=tokens.map(token=>{
         if(/^\s+$/.test(token)) return token;
-        const clean=token.replace(/[.,!?;:'"()\[\]]/g,'');
-        const isHighlighted=data.highlight_words.some(w=>w&&w.toLowerCase()===clean.toLowerCase());
-        const display=isHighlighted?`<span class="word-highlight clickable-word" onclick="showWordHint('${clean}',event)">${token}</span>`:`<span class="clickable-word" onclick="showWordHint('${clean}',event)">${token}</span>`;
-        return display;
+        const clean=token.replace(/^[^a-zA-Z']+|[^a-zA-Z']+$/g,'');
+        if(!clean) return token;
+        return `<span class="clickable-word" data-word="${clean}" onclick="wordClick(this,'${clean}')">${token}</span>`;
       }).join('');
       html+=`<p>${wordHtml}</p>`;
     });
     html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button onclick="speakText(window._currentReadingText)" style="padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊 Listen to text</button>
       <button onclick="startPronunciationCheck()" style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;" id="pronun-btn">🎤 Read aloud & check pronunciation</button>
-      <button onclick='saveHighlightedWords(window._highlightWords)' style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline;font-family:Inter,sans-serif;">Save key words to dictionary</button>
     </div>
     <div id="pronun-result" style="margin-top:12px;display:none;"></div>`;
     document.getElementById('reading-body').innerHTML=html;
@@ -969,26 +965,64 @@ async function generateReading(){
   }
 }
 
+async function wordClick(el, word){
+  if(!word||word.length<2) return;
+  // Toggle saved state
+  if(el.classList.contains('word-saved')){
+    showToast('"'+word+'" already in dictionary!');
+    return;
+  }
+  // Show meaning first
+  const hint=document.getElementById('word-hint');
+  hint.style.display='block';
+  const rect=el.getBoundingClientRect();
+  hint.style.left=Math.min(rect.left,window.innerWidth-230)+'px';
+  hint.style.top=(rect.bottom+8+window.scrollY)+'px';
+  hint.innerHTML='Loading... <small style="color:#aaa">(click to save)</small>';
+  try{
+    const def=await callClaude(`Define "${word}" in one simple sentence. Then give a very short example. Format exactly:\nMEANING: ...\nEXAMPLE: ...`);
+    const meaning=def.match(/MEANING:\s*(.+)/i)?.[1]?.trim()||def;
+    const example=def.match(/EXAMPLE:\s*(.+)/i)?.[1]?.trim()||'';
+    hint.innerHTML=`<strong>${word}</strong><br>${meaning}${example?'<br><em style="color:#ccc">'+example+'</em>':''}<br><button onclick="saveWordFromReading('${word}','${meaning.replace(/'/g,"\\'")}','${example.replace(/'/g,"\\'")}');document.getElementById('word-hint').style.display='none';" style="margin-top:6px;padding:3px 10px;background:#4a7c2f;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;">+ Save to dictionary</button>`;
+  }catch(e){hint.textContent='Could not load definition.';}
+  // Hide on outside click
+  setTimeout(()=>{
+    document.addEventListener('click',function h(ev){
+      if(!ev.target.closest('#word-hint')&&!ev.target.classList.contains('clickable-word')){
+        hint.style.display='none';document.removeEventListener('click',h);
+      }
+    });
+  },100);
+}
+
+function saveWordFromReading(word, meaning, example){
+  if(vocab.find(v=>v.word.toLowerCase()===word.toLowerCase())){showToast('"'+word+'" already in dictionary!');return;}
+  vocab.push({word,tr:'',def:meaning,ex:example,date:Date.now(),fromReading:true});
+  saveData();
+  // Mark word as saved in reading
+  document.querySelectorAll('.clickable-word').forEach(el=>{
+    if(el.dataset.word&&el.dataset.word.toLowerCase()===word.toLowerCase()){
+      el.classList.add('word-saved');
+      el.style.background='#b8e6a0';
+      el.style.borderRadius='2px';
+    }
+  });
+  showToast('"'+word+'" saved to dictionary! ✓');
+  updateAllUI();
+}
+
 let pronunciationRec=null,isPronRecording=false;
 function startPronunciationCheck(){
   if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){showToast('Speech recognition not supported. Use Chrome.');return;}
   const btn=document.getElementById('pronun-btn');
-  if(isPronRecording){
-    if(pronunciationRec) pronunciationRec.stop();
-    return;
-  }
+  if(isPronRecording){if(pronunciationRec) pronunciationRec.stop();return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   pronunciationRec=new SR();
   pronunciationRec.continuous=true;
   pronunciationRec.interimResults=false;
   pronunciationRec.lang='en-GB';
-  pronunciationRec.maxAlternatives=1;
   let transcript='';
-  pronunciationRec.onresult=e=>{
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal) transcript+=e.results[i][0].transcript+' ';
-    }
-  };
+  pronunciationRec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal) transcript+=e.results[i][0].transcript+' ';}};
   pronunciationRec.onend=async()=>{
     isPronRecording=false;
     btn.textContent='🎤 Read aloud & check pronunciation';
@@ -997,20 +1031,16 @@ function startPronunciationCheck(){
     const result=document.getElementById('pronun-result');
     result.style.display='block';
     result.innerHTML='<div style="padding:12px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text-muted)">Analysing your pronunciation...</div>';
-    const original=window._currentReadingText||'';
     try{
-      const feedback=await callClaude(`Compare this original English text with what the student read aloud. The student is a Turkish speaker at ${getLevel()} level learning English.
-
-ORIGINAL TEXT: "${original.substring(0,500)}"
+      const feedback=await callClaude(`Compare this original English text with what the student read aloud. Student is a Turkish speaker at ${getLevel()} level.
+ORIGINAL: "${(window._currentReadingText||'').substring(0,500)}"
 STUDENT READ: "${transcript.trim()}"
-
-Give brief pronunciation and reading feedback:
+Give pronunciation and reading feedback:
 1. Accuracy score (X/10)
-2. Words they skipped or mispronounced (list up to 5)
+2. Words skipped or mispronounced (up to 5)
 3. What they did well
 4. 1 tip for improvement
-
-Keep it encouraging and brief (max 150 words).`);
+Keep it encouraging, max 150 words.`);
       result.innerHTML=`<div style="padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);font-size:12px;line-height:1.7;">${feedback.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
     }catch(e){result.innerHTML='<div style="padding:12px;color:var(--red);font-size:12px">Error analysing pronunciation.</div>';}
   };
@@ -1021,37 +1051,6 @@ Keep it encouraging and brief (max 150 words).`);
   showToast('Recording... read the text aloud, then press Stop');
 }
 
-async function showWordHint(word,e){
-  const hint=document.getElementById('word-hint');
-  hint.style.display='block';hint.style.left=(e.pageX+10)+'px';hint.style.top=(e.pageY-40)+'px';hint.textContent='Loading...';
-  try{const def=await callClaude(`Define "${word}" in one simple sentence + give a short example. Format: DEFINITION | EXAMPLE`);hint.textContent=def;}
-  catch(er){hint.textContent='Definition unavailable.';}
-  document.addEventListener('click',function h(ev){if(!ev.target.classList.contains('word-highlight')){hint.style.display='none';document.removeEventListener('click',h);}});
-}
-function saveHighlightedWords(words){
-  words.forEach(w=>{if(!vocab.find(v=>v.word.toLowerCase()===w.toLowerCase())) vocab.push({word:w,tr:'',def:'From reading',ex:'',date:Date.now()});});
-  saveData();loadVocabList();showToast(words.length+' words saved!');updateAllUI();
-}
-
-function toggleReadingTimer(){
-  if(readRunning){clearInterval(readTimer);readRunning=false;document.getElementById('reading-timer-btn').innerHTML='&#9654;';}
-  else{readRunning=true;document.getElementById('reading-timer-btn').textContent='⏸';
-    readTimer=setInterval(()=>{readSecs--;if(readSecs<=0){clearInterval(readTimer);readRunning=false;document.getElementById('reading-timer-btn').innerHTML='&#9654;';showToast('Reading complete! ✅');markDone('reading');readSecs=1800;}updateTimerDisp();},1000);
-  }
-}
-function updateTimerDisp(){
-  const m=Math.floor(readSecs/60),s=readSecs%60,str=m+':'+String(s).padStart(2,'0');
-  document.getElementById('reading-timer').textContent=str;
-  document.getElementById('fs-timer').textContent=str;
-  document.getElementById('fs-prog-fill').style.width=((1800-readSecs)/1800*100)+'%';
-  const u=readSecs<300;
-  document.getElementById('reading-timer').classList.toggle('urgent',u);
-  document.getElementById('fs-timer').classList.toggle('urgent',u);
-}
-function openFullscreen(){document.getElementById('fullscreen-overlay').classList.add('active');if(!readRunning)toggleReadingTimer();}
-function closeFullscreen(){document.getElementById('fullscreen-overlay').classList.remove('active');}
-
-// CHAT
 async function sendMessage(){
   const input=document.getElementById('chat-input'),text=input.value.trim();
   if(!text) return;
@@ -1079,7 +1078,7 @@ IMPORTANT RULES:
   showTyping();
   try{
     const reply=await callClaude(text,system,chatHistory.slice(-10));
-    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});speakText(reply);
+    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});setTimeout(()=>speakText(reply),200);
   }catch(e){removeTyping();addMsg('assistant','Connection error. Please check your API key.');}
 }
 
@@ -1129,8 +1128,8 @@ function initSpeech(){
   if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     recognition=new SR();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-GB';
-    recognition.onresult=e=>{document.getElementById('chat-input').value=e.results[0][0].transcript;toggleMic();};
-    recognition.onend=()=>{isRec=false;document.getElementById('mic-btn').classList.remove('recording');};
+    recognition.onresult=e=>{if(e.results[e.resultIndex].isFinal){const t=e.results[e.resultIndex][0].transcript;document.getElementById('chat-input').value=t;recognition.stop();}};
+    recognition.onend=()=>{isRec=false;document.getElementById('mic-btn').classList.remove('recording');const t=document.getElementById('chat-input').value.trim();if(t){setTimeout(()=>sendMessage(),100);}};
   }
 }
 function toggleMic(){if(!recognition){showToast('Speech not supported in this browser.');return;}if(isRec){recognition.stop();isRec=false;document.getElementById('mic-btn').classList.remove('recording');}else{recognition.start();isRec=true;document.getElementById('mic-btn').classList.add('recording');showToast('Listening...');}}
@@ -1153,7 +1152,7 @@ function loadVocabList(filter='all'){
   list.innerHTML=words.map(v=>`<div class="vocab-item"><div><div class="vi-word">${v.word}</div>${v.tr?`<div class="vi-tr">${v.tr}</div>`:''}</div><div class="vi-def">${v.def||'<span style="color:var(--text-light)">No definition</span>'}${v.ex?`<div class="vi-ex">"${v.ex}"</div>`:''}</div><button class="vi-del" onclick="deleteVocab(${vocab.indexOf(v)})">&#x2715;</button></div>`).join('');
   document.getElementById('vocab-count-badge').textContent=vocab.length+' words';
 }
-function filterVocab(type,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadVocabList(type);}
+function filterVocab(type,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(type==='flashcard'){startFlashCards();return;}document.getElementById('flashcard-area').style.display='none';document.getElementById('vocab-list').style.display='flex';loadVocabList(type);}
 
 // GRAMMAR
 function loadGrammarExercise(){
@@ -1331,6 +1330,62 @@ async function callClaude(userMsg,system='',history=[]){
   if(!res.ok) throw new Error('API error '+res.status);
   const data=await res.json();
   return data.content[0].text;
+}
+
+// FLASH CARDS
+let fcIndex=0,fcShowing=false,fcWords=[];
+function startFlashCards(){
+  fcWords=[...vocab].sort(()=>Math.random()-.5);
+  if(!fcWords.length){showToast('No words in dictionary yet!');return;}
+  fcIndex=0;fcShowing=false;
+  document.getElementById('vocab-list').style.display='none';
+  document.getElementById('flashcard-area').style.display='block';
+  renderFlashCard();
+}
+function renderFlashCard(){
+  const area=document.getElementById('flashcard-area');
+  if(!fcWords.length){area.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:13px;">No words saved yet.</p>';return;}
+  const w=fcWords[fcIndex];
+  area.innerHTML=`
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <button onclick="exitFlashCards()" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;color:var(--text-muted);font-family:Inter,sans-serif;">✕ Exit cards</button>
+      <span class="fc-counter">${fcIndex+1} / ${fcWords.length}</span>
+      <button onclick="speakText('${w.word}')" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊</button>
+    </div>
+    <div class="flashcard" onclick="revealCard(this)">
+      <div class="fc-word">${w.word}</div>
+      <div class="fc-hint">Tap to reveal meaning</div>
+      <div class="fc-answer" id="fc-ans">
+        ${w.tr?'<div style="font-size:16px;font-weight:500;color:var(--amber);margin-bottom:6px;">'+w.tr+'</div>':''}
+        ${w.def?'<div style="font-size:13px;color:var(--text-muted);">'+w.def+'</div>':''}
+        ${w.ex?'<div style="font-size:12px;font-style:italic;color:var(--text-light);margin-top:8px;">"'+w.ex+'"</div>':''}
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button onclick="fcNav(-1)" style="padding:8px 20px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;" ${fcIndex===0?'disabled':''}>← Prev</button>
+      <button onclick="fcNav(1)" style="padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;">${fcIndex===fcWords.length-1?'Restart ↺':'Next →'}</button>
+    </div>`;
+}
+function revealCard(el){
+  const ans=document.getElementById('fc-ans');
+  const hint=el.querySelector('.fc-hint');
+  if(ans.style.display==='none'||ans.style.display===''){
+    ans.style.display='block';
+    if(hint) hint.style.display='none';
+  }
+}
+function fcNav(dir){
+  fcIndex+=dir;
+  if(fcIndex>=fcWords.length) fcIndex=0;
+  if(fcIndex<0) fcIndex=fcWords.length-1;
+  renderFlashCard();
+}
+function exitFlashCards(){
+  document.getElementById('flashcard-area').style.display='none';
+  document.getElementById('vocab-list').style.display='flex';
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+  loadVocabList('all');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}

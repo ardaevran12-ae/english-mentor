@@ -3,14 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EnglishMentor — Your Personal Coach</title>
+<title>EnglishMentor</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
-:root{--bg:#f7f7f5;--surface:#fff;--border:#e8e8e4;--border-strong:#d0d0c8;--text:#1a1a18;--text-muted:#6b6b65;--text-light:#9b9b95;--accent:#2d5016;--accent-light:#eef4e8;--accent-mid:#4a7c2f;--red:#c0392b;--red-light:#fdf0ef;--blue:#1a4a7a;--blue-light:#eef3fa;--amber:#a05c00;--amber-light:#fdf6e8;--radius:8px;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.10);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;}
-#api-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px;}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;color:#1a1a18;background:#f7f7f5;}
+:root{--bg:#f7f7f5;--surface:#fff;--border:#e8e8e4;--border-strong:#d0d0c8;--text:#1a1a18;--text-muted:#6b6b65;--text-light:#9b9b95;--accent:#2d5016;--accent-light:#eef4e8;--accent-mid:#4a7c2f;--red:#c0392b;--red-light:#fdf0ef;--blue:#1a4a7a;--blue-light:#eef3fa;--amber:#a05c00;--amber-light:#fdf6e8;--radius:8px;--shadow:0 1px 4px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.10);}
+
+/* LAYOUT */
+#api-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;}
 #api-screen.hidden{display:none;}
+#app{display:none;flex-direction:column;height:100vh;}
+#app.visible{display:flex;}
+
+/* NAV */
+nav{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;height:48px;}
+.nav-brand{font-size:14px;font-weight:600;color:var(--accent);padding-right:14px;border-right:1px solid var(--border);margin-right:6px;white-space:nowrap;}
+.nav-tabs{display:flex;flex:1;overflow-x:auto;height:48px;}
+.nav-tab{padding:0 12px;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap;height:48px;font-family:'Inter',sans-serif;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;padding-left:10px;flex-shrink:0;}
+.streak-badge{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-light);padding:4px 10px;border-radius:20px;}
+.level-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:var(--radius);cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);font-family:'Inter',sans-serif;}
+.btn-sm.mock{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* TABS - THE FIX */
+.tab-panel{display:none;flex-direction:column;height:calc(100vh - 48px);overflow:hidden;}
+.tab-panel.active{display:flex;}
+.tab-scroll{flex:1;overflow-y:auto;padding:24px;max-width:860px;margin:0 auto;width:100%;}
+
+/* API CARD */
 .api-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:48px 40px;max-width:480px;width:100%;box-shadow:var(--shadow-md);}
 .api-card h1{font-size:22px;font-weight:600;margin-bottom:6px;}
 .api-card>p{color:var(--text-muted);margin-bottom:20px;font-size:13px;line-height:1.7;}
@@ -18,26 +42,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .api-steps li{font-size:13px;color:var(--text-muted);margin-bottom:8px;padding-left:20px;position:relative;}
 .api-steps li::before{content:attr(data-n);position:absolute;left:0;color:var(--accent);font-weight:600;}
 .api-input-wrap input{width:100%;padding:12px 16px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;background:var(--bg);color:var(--text);outline:none;margin-bottom:16px;}
-.api-input-wrap input:focus{border-color:var(--accent);}
 .btn-primary{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
-.btn-primary:hover{background:var(--accent-mid);}
 #api-error{color:var(--red);font-size:12px;margin-top:8px;display:none;}
-#app{display:none;flex-direction:column;min-height:100vh;}
-#app.visible{display:flex;}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;flex-shrink:0;}
-.nav-brand{font-size:14px;font-weight:600;color:var(--accent);padding:14px 14px 14px 0;border-right:1px solid var(--border);margin-right:6px;white-space:nowrap;}
-.nav-tabs{display:flex;flex:1;overflow-x:auto;}
-.nav-tab{padding:14px 12px;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:'Inter',sans-serif;}
-.nav-tab:hover{color:var(--text);}
-.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;padding-left:10px;}
-.streak-badge{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-light);padding:4px 10px;border-radius:20px;}
-.level-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);}
-.btn-sm{padding:5px 10px;font-size:11px;font-weight:500;border-radius:var(--radius);cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);font-family:'Inter',sans-serif;}
-.btn-sm.mock{background:var(--blue);color:#fff;border-color:var(--blue);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}.tab-content.active#tab-reading{display:flex;flex-direction:column;min-height:calc(100vh - 48px);}.tab-content.active#tab-speaking{display:flex;flex-direction:column;min-height:calc(100vh - 48px);}
-.page-inner{padding:24px;max-width:860px;margin:0 auto;width:100%;}
+
+/* DASHBOARD */
 .dash-header{margin-bottom:20px;}
 .dash-header h2{font-size:19px;font-weight:600;margin-bottom:3px;}
 .dash-header p{color:var(--text-muted);font-size:12px;}
@@ -81,34 +89,40 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .mock-banner .mb-text strong{font-size:12px;}
 .mock-banner .mb-text p{font-size:11px;color:var(--text-muted);}
 .btn-blue{padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
-#tab-reading{display:flex;flex-direction:column;flex:1;}
-.reading-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:10px;}
-.reading-header h3{font-size:13px;font-weight:600;flex:1;}
+
+/* READING */
+.reading-topbar{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;}
+.reading-topbar h3{font-size:13px;font-weight:600;flex:1;}
 .timer-display{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent);min-width:58px;text-align:center;}
 .timer-display.urgent{color:var(--red);}
 .btn-icon{width:30px;height:30px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;}
-.reading-controls{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
-.reading-controls select,.chat-scenario-select{padding:5px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;background:var(--bg);color:var(--text);outline:none;}
+.reading-ctrlbar{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:9px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.reading-ctrlbar select{padding:5px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;background:var(--bg);color:var(--text);outline:none;}
 .btn-gen{padding:5px 13px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
-.current-level-tag{font-size:10px;color:var(--text-light);background:var(--bg);padding:3px 9px;border-radius:20px;border:1px solid var(--border);}
-.reading-body{flex:1;padding:32px 20px;max-width:680px;margin:0 auto;width:100%;overflow-y:auto;}
-.reading-body h2{font-family:'Lora',serif;font-size:19px;font-weight:600;margin-bottom:16px;line-height:1.4;}
-.reading-body p{font-family:'Lora',serif;font-size:15px;line-height:1.85;color:#2a2a28;margin-bottom:13px;}
-.word-highlight{background:#ffe58a;border-radius:2px;cursor:pointer;padding:0 1px;}.clickable-word{cursor:pointer;border-radius:2px;transition:background .1s;}.clickable-word:hover{background:#f0f0e8;}
-.word-hint{position:fixed;background:var(--text);color:#fff;padding:8px 11px;border-radius:var(--radius);font-size:12px;pointer-events:none;z-index:500;display:none;max-width:220px;line-height:1.5;}
+.level-tag{font-size:10px;color:var(--text-light);background:var(--bg);padding:3px 9px;border-radius:20px;border:1px solid var(--border);}
+.reading-content{flex:1;overflow-y:auto;padding:32px 20px;max-width:680px;margin:0 auto;width:100%;}
+.reading-content h2{font-family:'Lora',serif;font-size:19px;font-weight:600;margin-bottom:16px;line-height:1.4;}
+.reading-content p{font-family:'Lora',serif;font-size:15px;line-height:1.85;color:#2a2a28;margin-bottom:13px;}
+.clickable-word{cursor:pointer;border-radius:2px;transition:background .1s;}
+.clickable-word:hover{background:#f0e8d0;}
+.word-saved{background:#b8e6a0!important;border-radius:2px;}
 .reading-placeholder{text-align:center;padding:70px 20px;color:var(--text-muted);}
 .reading-placeholder .ph-icon{font-size:34px;margin-bottom:12px;}
-.fullscreen-overlay{position:fixed;inset:0;background:#fafaf8;z-index:900;display:none;flex-direction:column;}
-.fullscreen-overlay.active{display:flex;}
-.fs-header{padding:12px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+
+/* FULLSCREEN */
+.fs-overlay{position:fixed;inset:0;background:#fafaf8;z-index:900;display:none;flex-direction:column;}
+.fs-overlay.active{display:flex;}
+.fs-prog{height:3px;background:var(--border);flex-shrink:0;}
+.fs-prog-fill{height:100%;background:var(--accent);}
+.fs-topbar{flex-shrink:0;padding:12px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
 .fs-timer{font-size:26px;font-weight:300;font-variant-numeric:tabular-nums;color:var(--text-muted);}
 .fs-timer.urgent{color:var(--red);}
 .fs-title{flex:1;font-size:12px;color:var(--text-muted);}
 .fs-body{flex:1;overflow-y:auto;padding:48px 32px;max-width:640px;margin:0 auto;width:100%;}
 .fs-body h2{font-family:'Lora',serif;font-size:22px;font-weight:600;margin-bottom:22px;line-height:1.4;}
 .fs-body p{font-family:'Lora',serif;font-size:16px;line-height:2;color:#2a2a28;margin-bottom:16px;}
-.fs-prog{height:3px;background:var(--border);}
-.fs-prog-fill{height:100%;background:var(--accent);transition:width 1s linear;}
+
+/* LISTENING */
 .listening-intro{margin-bottom:16px;}
 .listening-intro h3{font-size:14px;font-weight:600;margin-bottom:3px;}
 .listening-intro p{font-size:12px;color:var(--text-muted);}
@@ -132,11 +146,12 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .listening-notes{margin-top:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
 .listening-notes h4{font-size:12px;font-weight:600;margin-bottom:8px;}
 .listening-notes textarea{width:100%;height:80px;padding:9px;border:1px solid var(--border);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg);resize:vertical;outline:none;}
-.listening-notes textarea:focus{border-color:var(--accent);}
-#tab-speaking{display:flex;flex-direction:column;flex:1;}
-.chat-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
-.ch-info p{font-size:11px;color:var(--text-muted);}
+
+/* SPEAKING */
+.chat-topbar{flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.chat-scenario-select{padding:5px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;background:var(--bg);color:var(--text);outline:none;}
 .ch-info{flex:1;}
+.ch-info p{font-size:11px;color:var(--text-muted);}
 .btn-feedback{padding:5px 12px;background:var(--amber-light);color:var(--amber);border:1px solid #e8c97a;border-radius:var(--radius);font-size:11px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-new-chat{padding:5px 12px;border:1px solid var(--border-strong);background:var(--surface);border-radius:var(--radius);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-muted);}
 .chat-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
@@ -150,27 +165,27 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .msg.user .msg-bubble{background:var(--accent);color:#fff;}
 .msg-actions{display:flex;gap:4px;margin-top:4px;}
 .msg-btn{padding:2px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text-muted);font-family:'Inter',sans-serif;}
-.feedback-panel{background:var(--amber-light);border-top:1px solid #e8c97a;padding:16px 18px;display:none;}
+.feedback-panel{flex-shrink:0;background:var(--amber-light);border-top:1px solid #e8c97a;padding:16px 18px;display:none;max-height:200px;overflow-y:auto;}
 .feedback-panel.visible{display:block;}
 .feedback-panel h4{font-size:12px;font-weight:600;color:var(--amber);margin-bottom:8px;}
 .feedback-content{font-size:12px;line-height:1.7;}
-.chat-input-area{background:var(--surface);border-top:1px solid var(--border);padding:12px 18px;}
+.chat-inputbar{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 18px;}
 .chat-input-wrap{display:flex;gap:6px;align-items:flex-end;}
 .chat-input-wrap textarea{flex:1;padding:8px 11px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--bg);resize:none;outline:none;min-height:38px;max-height:100px;}
 .chat-input-wrap textarea:focus{border-color:var(--accent);}
 .btn-send{padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
-.btn-send:hover{background:var(--accent-mid);}
 .btn-mic{width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .btn-mic.recording{background:var(--red-light);border-color:var(--red);animation:pulse 1.2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
 .chat-hint{font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;}
+
+/* VOCAB */
 .vocab-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
 .vocab-header h3{font-size:14px;font-weight:600;flex:1;}
 .vocab-add-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px;}
 .vocab-add-form h4{font-size:12px;font-weight:600;margin-bottom:9px;}
 .vocab-form-row{display:flex;gap:7px;flex-wrap:wrap;}
 .vocab-form-row input{flex:1;min-width:110px;padding:6px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;background:var(--bg);color:var(--text);outline:none;}
-.vocab-form-row input:focus{border-color:var(--accent);}
 .btn-add{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
 .vocab-filter{display:flex;gap:6px;margin-bottom:12px;}
 .filter-btn{padding:3px 11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);font-size:11px;cursor:pointer;color:var(--text-muted);font-family:'Inter',sans-serif;}
@@ -183,40 +198,47 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .vi-ex{font-size:10px;color:var(--text-muted);font-style:italic;margin-top:2px;}
 .vi-del{padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;font-size:10px;color:var(--text-light);}
 .vi-del:hover{background:var(--red-light);color:var(--red);border-color:var(--red);}
-.vocab-empty{text-align:center;padding:36px;color:var(--text-muted);font-size:12px;}.flashcard{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:40px 24px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all .2s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;}.flashcard:hover{border-color:var(--accent);box-shadow:var(--shadow-md);}.flashcard .fc-word{font-size:26px;font-weight:600;color:var(--accent);margin-bottom:8px;}.flashcard .fc-hint{font-size:12px;color:var(--text-light);}.flashcard .fc-answer{font-size:14px;line-height:1.6;color:var(--text);margin-top:16px;display:none;}.fc-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;}.fc-counter{font-size:12px;color:var(--text-muted);}
+.vocab-empty{text-align:center;padding:36px;color:var(--text-muted);font-size:12px;}
+.flashcard{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:40px 24px;text-align:center;cursor:pointer;margin-bottom:16px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.flashcard:hover{border-color:var(--accent);}
+.fc-word{font-size:26px;font-weight:600;color:var(--accent);margin-bottom:8px;}
+.fc-hint{font-size:12px;color:var(--text-light);}
+.fc-answer{font-size:14px;line-height:1.6;color:var(--text);margin-top:16px;display:none;}
+.fc-nav{display:flex;gap:10px;justify-content:center;margin-top:10px;}
+.fc-counter{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px;}
+
+/* GRAMMAR */
 .grammar-header{margin-bottom:18px;}
 .grammar-header h3{font-size:14px;font-weight:600;margin-bottom:3px;}
 .grammar-header p{font-size:12px;color:var(--text-muted);}
 .grammar-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .grammar-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
 .grammar-card h4{font-size:12px;font-weight:600;margin-bottom:11px;}
-.error-category{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.error-cat{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
 .ec-name{flex:1;font-size:11px;}
 .ec-bar-wrap{width:64px;background:var(--border);border-radius:4px;height:5px;}
 .ec-bar{height:100%;border-radius:4px;background:var(--accent);}
-.ec-count{font-size:10px;color:var(--text-muted);min-width:16px;text-align:right;}
-.grammar-exercise{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
-.grammar-exercise h4{font-size:12px;font-weight:600;margin-bottom:2px;}
-.ex-topic{font-size:10px;color:var(--accent);margin-bottom:12px;}
-.ex-question{font-size:13px;margin-bottom:11px;line-height:1.6;}
-.ex-options{display:flex;flex-direction:column;gap:6px;}
-.ex-option{padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;transition:all .15s;background:var(--bg);}
-.ex-option:hover:not(.disabled){border-color:var(--accent);background:var(--accent-light);}
-.ex-option.correct{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-.ex-option.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);}
-.ex-option.disabled{cursor:default;}
-.ex-explanation{margin-top:10px;padding:9px 11px;background:var(--accent-light);border-radius:var(--radius);font-size:11px;line-height:1.6;display:none;}
-.ex-explanation.visible{display:block;}
-.btn-next-ex{margin-top:10px;padding:6px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;display:none;}
-.btn-next-ex.visible{display:inline-block;}
 .roadmap-list{display:flex;flex-direction:column;gap:5px;}
 .roadmap-item{font-size:11px;padding:6px 9px;border-radius:var(--radius);border:1px solid var(--border);}
 .roadmap-item.done{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
 .roadmap-item.current{background:var(--amber-light);border-color:var(--amber);color:var(--amber);}
 .roadmap-item.next{background:var(--bg);color:var(--text-muted);}
-.stats-header{margin-bottom:18px;}
-.stats-header h3{font-size:14px;font-weight:600;margin-bottom:3px;}
-.stats-header p{font-size:12px;color:var(--text-muted);}
+.grammar-ex{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+.grammar-ex h4{font-size:12px;font-weight:600;margin-bottom:2px;}
+.ex-topic{font-size:10px;color:var(--accent);margin-bottom:12px;}
+.ex-question{font-size:13px;margin-bottom:11px;line-height:1.6;}
+.ex-options{display:flex;flex-direction:column;gap:6px;}
+.ex-option{padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;background:var(--bg);}
+.ex-option:hover:not(.disabled){border-color:var(--accent);background:var(--accent-light);}
+.ex-option.correct{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.ex-option.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);}
+.ex-option.disabled{cursor:default;}
+.ex-expl{margin-top:10px;padding:9px 11px;background:var(--accent-light);border-radius:var(--radius);font-size:11px;line-height:1.6;display:none;}
+.ex-expl.visible{display:block;}
+.btn-next-ex{margin-top:10px;padding:6px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;display:none;}
+.btn-next-ex.visible{display:inline-block;}
+
+/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;}
 .stat-card .s-val{font-size:24px;font-weight:600;color:var(--accent);line-height:1;margin-bottom:3px;}
@@ -235,7 +257,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .mock-row:last-child{border-bottom:none;}
 .mock-band{font-weight:600;font-size:13px;color:var(--accent);}
 .mock-date{color:var(--text-muted);flex:1;}
-.mock-level-change{font-size:10px;color:var(--blue);font-weight:500;}
+.mock-lc{font-size:10px;color:var(--blue);font-weight:500;}
 .skills-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
 .skills-breakdown h4{font-size:12px;font-weight:600;margin-bottom:12px;}
 .skill-row{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
@@ -243,12 +265,14 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .skill-bar-wrap{flex:1;background:var(--border);border-radius:4px;height:6px;}
 .skill-bar{height:100%;border-radius:4px;background:var(--accent);}
 .skill-pct{font-size:10px;color:var(--text-muted);min-width:28px;text-align:right;}
+
+/* QUIZ */
 .quiz-start{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;}
 .quiz-start h3{font-size:17px;font-weight:600;margin-bottom:5px;}
 .quiz-start>p{font-size:12px;color:var(--text-muted);margin-bottom:20px;}
 .quiz-level-note{font-size:11px;background:var(--accent-light);color:var(--accent);padding:6px 12px;border-radius:var(--radius);margin-bottom:18px;display:inline-block;}
 .quiz-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px;}
-.quiz-type-card{padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;text-align:left;}
+.quiz-type-card{padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:left;}
 .quiz-type-card:hover,.quiz-type-card.selected{border-color:var(--accent);background:var(--accent-light);}
 .qtc-icon{font-size:20px;margin-bottom:5px;}
 .qtc-name{font-size:11px;font-weight:600;margin-bottom:2px;}
@@ -256,43 +280,50 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 .btn-start-quiz{padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;}
 .quiz-active{display:none;}
 .quiz-active.visible{display:block;}
-.quiz-progress-bar{height:4px;background:var(--border);border-radius:4px;margin-bottom:20px;}
-.quiz-progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s;}
+.quiz-prog-bar{height:4px;background:var(--border);border-radius:4px;margin-bottom:20px;}
+.quiz-prog-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s;}
 .quiz-q-num{font-size:11px;color:var(--text-muted);margin-bottom:6px;}
 .quiz-question{font-size:15px;font-weight:500;margin-bottom:18px;line-height:1.5;}
 .quiz-options{display:flex;flex-direction:column;gap:8px;}
-.quiz-option{padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:13px;transition:all .15s;background:var(--surface);}
+.quiz-option{padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:13px;background:var(--surface);}
 .quiz-option:hover:not(.disabled){border-color:var(--accent);background:var(--accent-light);}
 .quiz-option.correct{background:var(--accent-light);border-color:var(--accent);color:var(--accent);font-weight:500;}
 .quiz-option.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);}
 .quiz-option.disabled{cursor:default;}
 .quiz-result{display:none;text-align:center;padding:32px;}
 .quiz-result.visible{display:block;}
-.quiz-result .score{font-size:44px;font-weight:600;color:var(--accent);line-height:1;}
-.quiz-result .score-label{font-size:12px;color:var(--text-muted);margin-top:3px;margin-bottom:18px;}
+.quiz-score-big{font-size:44px;font-weight:600;color:var(--accent);line-height:1;}
+.quiz-score-label{font-size:12px;color:var(--text-muted);margin-top:3px;margin-bottom:18px;}
 .quiz-result>p{font-size:12px;color:var(--text-muted);max-width:340px;margin:0 auto 18px;line-height:1.7;}
+
+/* MOCK */
 #mock-overlay{position:fixed;inset:0;background:#fff;z-index:800;display:none;flex-direction:column;}
 #mock-overlay.active{display:flex;}
-.mock-header{padding:12px 24px;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;}
-.mock-header h2{font-size:14px;font-weight:600;flex:1;}
-.mock-timer{font-size:17px;font-variant-numeric:tabular-nums;font-weight:300;}
+.mock-topbar{flex-shrink:0;padding:12px 24px;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;}
+.mock-topbar h2{font-size:14px;font-weight:600;flex:1;}
+.mock-timer-disp{font-size:17px;font-variant-numeric:tabular-nums;font-weight:300;}
 .mock-body{flex:1;overflow-y:auto;padding:32px 24px;max-width:760px;margin:0 auto;width:100%;}
 .mock-section{margin-bottom:32px;}
 .mock-section h3{font-size:14px;font-weight:600;border-bottom:2px solid var(--border);padding-bottom:8px;margin-bottom:16px;}
 .mock-section p{font-size:13px;line-height:1.8;margin-bottom:12px;}
 .mock-section textarea{width:100%;height:140px;padding:11px;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;resize:vertical;outline:none;background:var(--bg);}
-.mock-section textarea:focus{border-color:var(--blue);}
 .btn-submit-mock{padding:10px 26px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;margin-top:12px;}
+
+/* LEVEL UP */
 .levelup-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;}
 .levelup-modal.active{display:flex;}
 .levelup-card{background:var(--surface);border-radius:14px;padding:36px;max-width:400px;width:90%;text-align:center;box-shadow:var(--shadow-md);}
-.levelup-card .lu-icon{font-size:44px;margin-bottom:14px;}
+.lu-icon{font-size:44px;margin-bottom:14px;}
 .levelup-card h2{font-size:20px;font-weight:600;margin-bottom:6px;color:var(--accent);}
 .levelup-card>p{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:20px;}
 .lu-levels{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;}
 .lu-from{font-size:16px;font-weight:600;color:var(--text-muted);}
 .lu-arrow{font-size:18px;color:var(--accent);}
 .lu-to{font-size:16px;font-weight:600;color:var(--accent);}
+
+/* MISC */
+.word-hint{position:fixed;background:#1a1a18;color:#fff;padding:10px 13px;border-radius:var(--radius);font-size:12px;pointer-events:none;z-index:500;display:none;max-width:240px;line-height:1.5;}
+.word-hint button{pointer-events:all;}
 .toast{position:fixed;bottom:18px;right:18px;background:var(--text);color:#fff;padding:9px 14px;border-radius:var(--radius);font-size:12px;z-index:999;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 .typing-indicator{display:flex;gap:4px;padding:3px 0;}
@@ -304,31 +335,51 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
 </style>
 </head>
 <body>
+
+<!-- API -->
 <div id="api-screen">
   <div class="api-card">
     <h1>EnglishMentor</h1>
-    <p>Your AI-powered English coach. Starts at A2-B1 and grows automatically with your mock test results — step by step to C1-C2.</p>
+    <p>Your AI-powered English coach. Starts at A2-B1 and grows with your mock test results.</p>
     <ol class="api-steps">
       <li data-n="1.">Go to <strong>console.anthropic.com</strong></li>
-      <li data-n="2.">Sign in &rarr; API Keys &rarr; Create Key</li>
-      <li data-n="3.">Paste your key below (starts with sk-ant-)</li>
+      <li data-n="2.">API Keys &rarr; Create Key</li>
+      <li data-n="3.">Paste your key below</li>
     </ol>
     <div class="api-input-wrap"><input type="password" id="api-key-input" placeholder="sk-ant-api03-..."/></div>
     <button class="btn-primary" onclick="saveApiKey()">Start Learning &rarr;</button>
     <div id="api-error">Please enter a valid API key (starts with sk-ant-)</div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 <div class="word-hint" id="word-hint"></div>
+
+<!-- LEVEL UP MODAL -->
 <div class="levelup-modal" id="levelup-modal">
   <div class="levelup-card">
     <div class="lu-icon" id="lu-icon">🎉</div>
     <h2 id="lu-title">Level Up!</h2>
     <div class="lu-levels"><div class="lu-from" id="lu-from">A2-B1</div><div class="lu-arrow">&rarr;</div><div class="lu-to" id="lu-to">B1-B2</div></div>
-    <p id="lu-message"></p>
+    <p id="lu-msg"></p>
     <button class="btn-primary" onclick="closeLevelUp()">Let's keep going! &rarr;</button>
   </div>
 </div>
+
+<!-- MOCK TEST -->
+<div id="mock-overlay">
+  <div class="mock-topbar"><h2>📋 IELTS-Style Mock Test</h2><div class="mock-timer-disp" id="mock-timer-disp">60:00</div><button class="btn-sm" onclick="closeMockTest()" style="margin-left:12px">&#x2715; Exit</button></div>
+  <div class="mock-body" id="mock-body"><div style="text-align:center;padding:60px;color:var(--text-muted)"><p>Generating test...</p></div></div>
+</div>
+
+<!-- FULLSCREEN READING -->
+<div class="fs-overlay" id="fs-overlay">
+  <div class="fs-prog"><div class="fs-prog-fill" id="fs-prog-fill" style="width:100%"></div></div>
+  <div class="fs-topbar"><div class="fs-timer" id="fs-timer">30:00</div><div class="fs-title" id="fs-title-text">Focus Reading Mode</div><button class="btn-icon" onclick="closeFullscreen()">&#x2715;</button></div>
+  <div class="fs-body" id="fs-body"></div>
+</div>
+
+<!-- APP -->
 <div id="app">
   <nav>
     <div class="nav-brand">EnglishMentor</div>
@@ -349,8 +400,9 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
     </div>
   </nav>
 
-  <div class="tab-content active" id="tab-dashboard">
-    <div class="page-inner">
+  <!-- DASHBOARD -->
+  <div class="tab-panel active" id="tab-dashboard">
+    <div class="tab-scroll">
       <div class="dash-header"><h2 id="dash-greeting">Good morning!</h2><p id="dash-date"></p></div>
       <div class="dash-grid">
         <div class="dash-card accent"><div class="dc-label">Current Level</div><div class="dc-val" id="dash-level">A2-B1</div><div class="dc-sub">Target: C1-C2</div></div>
@@ -358,23 +410,19 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
         <div class="dash-card"><div class="dc-label">Words Saved</div><div class="dc-val" id="dash-words">0</div><div class="dc-sub">Personal dictionary</div></div>
         <div class="dash-card"><div class="dc-label">Mock Tests</div><div class="dc-val" id="dash-mocks">0</div><div class="dc-sub" id="dash-mock-sub">First: in 14 days</div></div>
       </div>
-      <div class="level-progress">
-        <h3>Your Journey</h3>
-        <div class="level-track" id="level-track"></div>
-        <div class="lp-note" id="lp-note"></div>
-      </div>
+      <div class="level-progress"><h3>Your Journey</h3><div class="level-track" id="level-track"></div><div class="lp-note" id="lp-note"></div></div>
       <div class="today-plan">
         <h3>Today's Plan</h3>
         <div class="plan-items">
           <div class="plan-item" id="plan-reading" onclick="switchTab('reading')"><div class="pi-check" id="pc-reading">📖</div><div class="pi-info"><div class="pi-name">Reading</div><div class="pi-meta" id="pm-reading">Loading...</div></div><div class="pi-dur">30 min</div></div>
           <div class="plan-item" id="plan-listening" onclick="switchTab('listening')"><div class="pi-check" id="pc-listening">🎧</div><div class="pi-info"><div class="pi-name">Listening</div><div class="pi-meta" id="pm-listening">Loading...</div></div><div class="pi-dur">30 min</div></div>
-          <div class="plan-item" id="plan-speaking" onclick="switchTab('speaking')"><div class="pi-check" id="pc-speaking">🗣</div><div class="pi-info"><div class="pi-name">Speaking &amp; Writing</div><div class="pi-meta" id="pm-speaking">Loading...</div></div><div class="pi-dur">20 min</div></div>
+          <div class="plan-item" id="plan-speaking" onclick="switchTab('speaking')"><div class="pi-check" id="pc-speaking">🗣</div><div class="pi-info"><div class="pi-name">Speaking</div><div class="pi-meta" id="pm-speaking">Loading...</div></div><div class="pi-dur">20 min</div></div>
           <div class="plan-item" id="plan-vocabulary" onclick="switchTab('vocabulary')"><div class="pi-check" id="pc-vocabulary">📝</div><div class="pi-info"><div class="pi-name">Vocabulary</div><div class="pi-meta">Review &amp; add words</div></div><div class="pi-dur">20 min</div></div>
           <div class="plan-item" id="plan-grammar" onclick="switchTab('grammar')"><div class="pi-check" id="pc-grammar">✏️</div><div class="pi-info"><div class="pi-name">Grammar</div><div class="pi-meta" id="pm-grammar">Loading...</div></div><div class="pi-dur">20 min</div></div>
         </div>
       </div>
-      <div class="prog-label"><span>Daily progress</span><span id="dash-progress-pct">0%</span></div>
-      <div class="prog-bar-wrap"><div class="prog-bar" id="dash-progress-bar" style="width:0%"></div></div>
+      <div class="prog-label"><span>Daily progress</span><span id="dash-prog-pct">0%</span></div>
+      <div class="prog-bar-wrap"><div class="prog-bar" id="dash-prog-bar" style="width:0%"></div></div>
       <div class="mock-banner" id="mock-banner" style="display:none">
         <div class="mb-text"><strong>📋 Mock Test Due!</strong><p>2 weeks since your last test. Time to measure progress!</p></div>
         <button class="btn-blue" onclick="openMockTest()">Start Mock Test</button>
@@ -382,14 +430,15 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
     </div>
   </div>
 
-  <div class="tab-content" id="tab-reading">
-    <div class="reading-header">
+  <!-- READING -->
+  <div class="tab-panel" id="tab-reading">
+    <div class="reading-topbar">
       <h3 id="reading-title">Reading Session</h3>
       <div class="timer-display" id="reading-timer">30:00</div>
       <button class="btn-icon" id="reading-timer-btn" onclick="toggleReadingTimer()">&#9654;</button>
       <button class="btn-icon" onclick="openFullscreen()">&#x26F6;</button>
     </div>
-    <div class="reading-controls">
+    <div class="reading-ctrlbar">
       <select id="reading-topic">
         <option value="daily">Daily Life &amp; London</option>
         <option value="news">News &amp; Current Affairs</option>
@@ -399,17 +448,18 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
         <option value="ielts">IELTS Academic</option>
       </select>
       <button class="btn-gen" onclick="generateReading()">Generate Text</button>
-      <span class="current-level-tag" id="reading-level-tag">Level: A2-B1</span>
-      <span style="font-size:10px;color:var(--text-light)">Click any word for meaning</span>
+      <span class="level-tag" id="reading-level-tag">Level: A2-B1</span>
+      <span style="font-size:10px;color:var(--text-light)">Click any word for meaning &amp; save</span>
     </div>
-    <div class="reading-body" id="reading-body">
+    <div class="reading-content" id="reading-content">
       <div class="reading-placeholder"><div class="ph-icon">📖</div><p style="font-size:13px">Select a topic and click Generate to get a reading passage matched to your current level.</p></div>
     </div>
   </div>
 
-  <div class="tab-content" id="tab-listening">
-    <div class="page-inner">
-      <div class="listening-intro"><h3>Listening Practice</h3><p id="listening-level-note">Videos matched to your level. More advanced content unlocks as you progress.</p></div>
+  <!-- LISTENING -->
+  <div class="tab-panel" id="tab-listening">
+    <div class="tab-scroll">
+      <div class="listening-intro"><h3>Listening Practice</h3><p id="listening-level-note">Videos matched to your level. More unlocks as you progress.</p></div>
       <div class="level-filter">
         <button class="lf-btn active" onclick="filterVideos('all',this)">My level</button>
         <button class="lf-btn" onclick="filterVideos('a2b1',this)">A2-B1</button>
@@ -423,8 +473,9 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
     </div>
   </div>
 
-  <div class="tab-content" id="tab-speaking">
-    <div class="chat-header">
+  <!-- SPEAKING -->
+  <div class="tab-panel" id="tab-speaking">
+    <div class="chat-topbar">
       <select class="chat-scenario-select" id="chat-scenario">
         <option value="daily">Daily Life</option>
         <option value="work">Work &amp; Career</option>
@@ -445,18 +496,19 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
       </div>
     </div>
     <div class="feedback-panel" id="feedback-panel"><h4>📋 Session Feedback</h4><div class="feedback-content" id="feedback-content"></div></div>
-    <div class="chat-input-area">
+    <div class="chat-inputbar">
       <div class="chat-input-wrap">
         <button class="btn-mic" id="mic-btn" onclick="toggleMic()">🎤</button>
         <textarea id="chat-input" placeholder="Type or use mic..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}" oninput="autoResize(this)"></textarea>
         <button class="btn-send" onclick="sendMessage()">Send &rarr;</button>
       </div>
-      <div class="chat-hint">Enter to send &middot; Shift+Enter new line &middot; 🎤 voice input</div>
+      <div class="chat-hint">Enter to send &middot; Shift+Enter new line &middot; 🎤 speak &rarr; auto-send</div>
     </div>
   </div>
 
-  <div class="tab-content" id="tab-vocabulary">
-    <div class="page-inner">
+  <!-- VOCABULARY -->
+  <div class="tab-panel" id="tab-vocabulary">
+    <div class="tab-scroll">
       <div class="vocab-header"><h3>Personal Dictionary</h3><span id="vocab-count-badge" style="font-size:11px;color:var(--text-muted)">0 words</span></div>
       <div class="vocab-add-form">
         <h4>Add a new word</h4>
@@ -471,46 +523,50 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
       <div class="vocab-filter">
         <button class="filter-btn active" onclick="filterVocab('all',this)">All Words</button>
         <button class="filter-btn" onclick="filterVocab('recent',this)">Recent</button>
+        <button class="filter-btn" onclick="filterVocab('flashcard',this)">🃏 Flash Cards</button>
       </div>
+      <div id="flashcard-area" style="display:none;"></div>
       <div class="vocab-list" id="vocab-list"><div class="vocab-empty">No words yet. Add some above or save from reading!</div></div>
     </div>
   </div>
 
-  <div class="tab-content" id="tab-grammar">
-    <div class="page-inner">
+  <!-- GRAMMAR -->
+  <div class="tab-panel" id="tab-grammar">
+    <div class="tab-scroll">
       <div class="grammar-header"><h3>Grammar Practice</h3><p id="grammar-level-note">Exercises matched to your current level</p></div>
       <div class="grammar-grid">
         <div class="grammar-card">
           <h4>Your Error Patterns</h4>
-          <div class="error-category"><div class="ec-name">Tense usage</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:70%"></div></div><div class="ec-count" id="ec-tense">0</div></div>
-          <div class="error-category"><div class="ec-name">Articles (a/an/the)</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:50%"></div></div><div class="ec-count" id="ec-article">0</div></div>
-          <div class="error-category"><div class="ec-name">Prepositions</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:40%"></div></div><div class="ec-count" id="ec-prep">0</div></div>
-          <div class="error-category"><div class="ec-name">Word order</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:25%"></div></div><div class="ec-count" id="ec-order">0</div></div>
+          <div class="error-cat"><div class="ec-name">Tense usage</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:70%"></div></div></div>
+          <div class="error-cat"><div class="ec-name">Articles (a/an/the)</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:50%"></div></div></div>
+          <div class="error-cat"><div class="ec-name">Prepositions</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:40%"></div></div></div>
+          <div class="error-cat"><div class="ec-name">Word order</div><div class="ec-bar-wrap"><div class="ec-bar" style="width:25%"></div></div></div>
         </div>
         <div class="grammar-card"><h4>Grammar Roadmap</h4><div class="roadmap-list" id="roadmap-list"></div></div>
       </div>
-      <div class="grammar-exercise">
+      <div class="grammar-ex">
         <h4>Today's Exercise</h4>
         <div class="ex-topic" id="ex-topic">Loading...</div>
         <div class="ex-question" id="ex-question"></div>
         <div class="ex-options" id="ex-options"></div>
-        <div class="ex-explanation" id="ex-explanation"></div>
-        <button class="btn-next-ex" id="btn-next-ex" onclick="nextGrammarExercise()">Next Exercise &rarr;</button>
+        <div class="ex-expl" id="ex-expl"></div>
+        <button class="btn-next-ex" id="btn-next-ex" onclick="nextGrammarEx()">Next Exercise &rarr;</button>
       </div>
     </div>
   </div>
 
-  <div class="tab-content" id="tab-stats">
-    <div class="page-inner">
-      <div class="stats-header"><h3>Your Progress</h3><p>Tracking your journey from A2-B1 to C1-C2</p></div>
+  <!-- STATS -->
+  <div class="tab-panel" id="tab-stats">
+    <div class="tab-scroll">
+      <div style="margin-bottom:18px;"><h3 style="font-size:14px;font-weight:600;margin-bottom:3px;">Your Progress</h3><p style="font-size:12px;color:var(--text-muted);">Tracking your journey from A2-B1 to C1-C2</p></div>
       <div class="stats-grid">
         <div class="stat-card"><div class="s-val" id="stat-streak">0</div><div class="s-label">Day Streak 🔥</div></div>
-        <div class="stat-card"><div class="s-val" id="stat-total-days">0</div><div class="s-label">Study Days</div></div>
+        <div class="stat-card"><div class="s-val" id="stat-days">0</div><div class="s-label">Study Days</div></div>
         <div class="stat-card"><div class="s-val" id="stat-words">0</div><div class="s-label">Words Saved</div></div>
         <div class="stat-card"><div class="s-val" id="stat-sessions">0</div><div class="s-label">Chat Sessions</div></div>
       </div>
       <div class="weekly-chart"><h4>This Week (minutes)</h4><div class="chart-bars" id="weekly-chart"></div></div>
-      <div class="mock-history"><h4>Mock Test History</h4><div id="mock-history-list"><p style="font-size:11px;color:var(--text-muted)">No mock tests yet. Your first is due in 14 days.</p></div></div>
+      <div class="mock-history"><h4>Mock Test History</h4><div id="mock-history-list"><p style="font-size:11px;color:var(--text-muted)">No mock tests yet.</p></div></div>
       <div class="skills-breakdown">
         <h4>Skills Breakdown</h4>
         <div class="skill-row"><div class="skill-name">Reading</div><div class="skill-bar-wrap"><div class="skill-bar" id="sb-reading" style="width:0%"></div></div><div class="skill-pct" id="sp-reading">0x</div></div>
@@ -522,266 +578,58 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16
     </div>
   </div>
 
-  <div class="tab-content" id="tab-quiz">
-    <div class="page-inner" style="max-width:660px;">
+  <!-- QUIZ -->
+  <div class="tab-panel" id="tab-quiz">
+    <div class="tab-scroll" style="max-width:660px;">
       <div class="quiz-start" id="quiz-start">
         <h3>Quiz Mode</h3>
-        <p>Questions matched to your current level. Gets harder as you progress.</p>
+        <p>Questions matched to your level. Gets harder as you progress.</p>
         <div class="quiz-level-note" id="quiz-level-note">Current level: A2-B1</div>
         <div class="quiz-type-grid">
           <div class="quiz-type-card selected" onclick="selectQuizType(this,'vocabulary')"><div class="qtc-icon">📝</div><div class="qtc-name">Vocabulary</div><div class="qtc-desc">Words for your level</div></div>
           <div class="quiz-type-card" onclick="selectQuizType(this,'grammar')"><div class="qtc-icon">✏️</div><div class="qtc-name">Grammar</div><div class="qtc-desc">Structures for your level</div></div>
           <div class="quiz-type-card" onclick="selectQuizType(this,'level')"><div class="qtc-icon">📊</div><div class="qtc-name">Level Test</div><div class="qtc-desc">Mixed assessment</div></div>
-          <div class="quiz-type-card" onclick="selectQuizType(this,'idioms')"><div class="qtc-icon">🇬🇧</div><div class="qtc-name">Idioms</div><div class="qtc-desc">British English expressions</div></div>
+          <div class="quiz-type-card" onclick="selectQuizType(this,'idioms')"><div class="qtc-icon">🇬🇧</div><div class="qtc-name">Idioms</div><div class="qtc-desc">British expressions</div></div>
         </div>
         <button class="btn-start-quiz" onclick="startQuiz()">Start Quiz &rarr;</button>
       </div>
       <div class="quiz-active" id="quiz-active">
-        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog-fill" style="width:0%"></div></div>
+        <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="quiz-prog-fill" style="width:0%"></div></div>
         <div class="quiz-q-num" id="quiz-q-num">Question 1 of 10</div>
         <div class="quiz-question" id="quiz-question"></div>
         <div class="quiz-options" id="quiz-options"></div>
       </div>
       <div class="quiz-result" id="quiz-result">
-        <div class="score" id="quiz-score">8/10</div>
-        <div class="score-label">Correct answers</div>
-        <p id="quiz-feedback-text"></p>
+        <div class="quiz-score-big" id="quiz-score">8/10</div>
+        <div class="quiz-score-label">Correct answers</div>
+        <p id="quiz-fb-text"></p>
         <button class="btn-start-quiz" onclick="resetQuiz()">Try Again &rarr;</button>
       </div>
     </div>
   </div>
-</div>
 
-<div class="fullscreen-overlay" id="fullscreen-overlay">
-  <div class="fs-prog"><div class="fs-prog-fill" id="fs-prog-fill" style="width:100%"></div></div>
-  <div class="fs-header"><div class="fs-timer" id="fs-timer">30:00</div><div class="fs-title" id="fs-title">Focus Reading Mode</div><button class="btn-icon" onclick="closeFullscreen()">&#x2715;</button></div>
-  <div class="fs-body" id="fs-body"></div>
-</div>
+</div><!-- end #app -->
 
-<div id="mock-overlay">
-  <div class="mock-header"><h2>📋 IELTS-Style Mock Test</h2><div class="mock-timer" id="mock-timer">60:00</div><button class="btn-sm" onclick="closeMockTest()" style="margin-left:12px">&#x2715; Exit</button></div>
-  <div class="mock-body" id="mock-body"><div style="text-align:center;padding:60px;color:var(--text-muted)"><p>Generating test...</p></div></div>
-</div>
 <script>
 const LEVELS=['A2-B1','B1-B2','B2','B2-C1','C1','C1-C2'];
-const LEVEL_UP_THRESHOLDS={'B1-B2':4.0,'B2':5.0,'B2-C1':6.0,'C1':6.5,'C1-C2':7.5};
-const LEVEL_DOWN_THRESHOLDS={'A2-B1':3.5,'B1-B2':4.5,'B2':5.5,'B2-C1':6.2};
+const ROADMAPS={'A2-B1':[{l:'✅ Present & Past Simple',s:'done'},{l:'🎯 Present Perfect',s:'current'},{l:'⬜ Future forms',s:'next'},{l:'⬜ Second Conditional',s:'next'},{l:'⬜ Passive Voice',s:'next'}],'B1-B2':[{l:'✅ Present Perfect & Past',s:'done'},{l:'✅ Second Conditional',s:'done'},{l:'🎯 Third Conditional & Wish',s:'current'},{l:'⬜ Passive (all tenses)',s:'next'},{l:'⬜ Reported Speech',s:'next'}],'B2':[{l:'✅ All Conditionals',s:'done'},{l:'✅ Passive & Reported Speech',s:'done'},{l:'🎯 Inversion & Emphasis',s:'current'},{l:'⬜ Subjunctive',s:'next'},{l:'⬜ Participle Clauses',s:'next'}],'B2-C1':[{l:'✅ Inversion & Emphasis',s:'done'},{l:'✅ Subjunctive',s:'done'},{l:'🎯 Nominalisation & Academic style',s:'current'},{l:'⬜ Hedging language',s:'next'},{l:'⬜ Complex discourse markers',s:'next'}],'C1':[{l:'✅ Nominalisation & Hedging',s:'done'},{l:'✅ Complex discourse markers',s:'done'},{l:'🎯 Rhetorical devices & nuance',s:'current'},{l:'⬜ Absolute clauses',s:'next'},{l:'⬜ C2 literary structures',s:'next'}],'C1-C2':[{l:'✅ All C1 structures',s:'done'},{l:'🎯 Rhetorical & literary style',s:'current'},{l:'⬜ C2 formal/academic writing',s:'next'}]};
+const PLAN_DESC={'A2-B1':{r:'Simple text: daily life & London',l:'A2-B1 BBC or pronunciation video',s:'Basic conversation practice',g:'Present/Past tenses, articles'},'B1-B2':{r:'Intermediate: news, travel, work',l:'TED Talk or intermediate BBC',s:'More complex scenarios',g:'Conditionals, passive, reported speech'},'B2':{r:'B2 level: Guardian/BBC articles',l:'TED Talk or IELTS practice',s:'Formal & professional conversations',g:'Inversion, emphasis, advanced structures'},'B2-C1':{r:'Advanced articles and opinion pieces',l:'Advanced TED or IELTS band 7+',s:'Academic discussions',g:'Nominalisation, hedging, C1 style'},'C1':{r:'Native-level journalism and essays',l:'Authentic speech: documentaries',s:'Sophisticated debate & persuasion',g:'Rhetorical devices, literary structures'},'C1-C2':{r:'Complex literary & academic texts',l:'Authentic unscripted speech',s:'Near-native nuanced communication',g:'C2 written style and subtle structures'}};
+const VIDEOS=[{cat:'BBC Learning English',icon:'📺',level:'a2b1',title:'6 Minute English — Beginner Compilation',meta:'BBC Learning English',url:'https://www.youtube.com/watch?v=fcN0BXzK8bg'},{cat:'BBC Learning English',icon:'📺',level:'a2b1',title:'English at Work — Series Playlist',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96_zHuVg6Ecy2F7j4Aq4valQ'},{cat:'BBC Learning English',icon:'📺',level:'b1b2',title:'The English We Speak — Idioms',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96-wR1k2GExeaVOVIGfaPoBv'},{cat:'BBC Learning English',icon:'📺',level:'b1b2',title:'6 Minute English — All Topics',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96-FECmH9l7Vlx5VDigvgZpt'},{cat:'BBC Learning English',icon:'📺',level:'b2c1',title:'News Review — Advanced Vocabulary',meta:'BBC Learning English',url:'https://www.youtube.com/@bbclearningenglish/videos'},{cat:'TED Talks',icon:'🎤',level:'b1b2',title:'How to Speak So People Want to Listen',meta:'Julian Treasure · TED (verified)',url:'https://www.youtube.com/watch?v=eIho2S0ZahI'},{cat:'TED Talks',icon:'🎤',level:'b2',title:'The Surprising Science of Happiness',meta:'Dan Gilbert · TED',url:'https://www.youtube.com/watch?v=RcGyVTAoXEU'},{cat:'TED Talks',icon:'🎤',level:'b2c1',title:'The Power of Vulnerability',meta:'Brene Brown · TED (verified)',url:'https://www.youtube.com/watch?v=iCvmsMzlF7o'},{cat:'TED Talks',icon:'🎤',level:'c1',title:'Steve Jobs Stanford Commencement',meta:'Stanford University (verified)',url:'https://www.youtube.com/watch?v=UF8uR6Z6KLc'},{cat:'IELTS Preparation',icon:'📋',level:'b1b2',title:'IELTS Liz — Speaking Tips',meta:'IELTS Liz (2M+ subscribers)',url:'https://www.youtube.com/@IELTSLiz/videos'},{cat:'IELTS Preparation',icon:'📋',level:'b2',title:'E2 IELTS — Writing Task 2 Band 7+',meta:'E2 IELTS',url:'https://www.youtube.com/@E2IELTS/videos'},{cat:'IELTS Preparation',icon:'📋',level:'c1',title:'IELTS Simon — Advanced Strategies',meta:'IELTS Simon',url:'https://www.youtube.com/@IeltsSimon9/videos'},{cat:'Natural English & Fluency',icon:'🇬🇧',level:'a2b1',title:"Rachel's English — Pronunciation Basics",meta:"Rachel's English",url:'https://www.youtube.com/@rachelsenglish/videos'},{cat:'Natural English & Fluency',icon:'🇬🇧',level:'b1b2',title:'English with Lucy — Intermediate',meta:'10M+ subscribers',url:'https://www.youtube.com/@EnglishwithLucy/videos'},{cat:'Natural English & Fluency',icon:'🇬🇧',level:'b2',title:'Speak English with Vanessa — Advanced',meta:'Vanessa',url:'https://www.youtube.com/@SpeakEnglishWithVanessa/videos'},{cat:'Natural English & Fluency',icon:'🇬🇧',level:'c1',title:'EngVid — C1 Advanced Grammar',meta:'Professional teachers',url:'https://www.youtube.com/@engvid/videos'}];
+const GRAMMAR_BANKS={'A2-B1':[{topic:'Present Simple vs Continuous',q:'She ___ to school every day.',opts:['is going','goes','go','going'],correct:1,exp:'Present simple = habits. "Every day" is the signal. She GOES = correct.'},{topic:'Past Simple',q:'I ___ a great film last night.',opts:['see','seen','saw','was seeing'],correct:2,exp:'Past simple = completed action. "Last night" = specific past time. SAW is correct.'},{topic:'Articles',q:'She is ___ teacher at ___ school near here.',opts:['a / a','a / the','the / a','the / the'],correct:1,exp:'"a teacher" = first mention. "the school" = specific one we know about.'},{topic:'Future: going to',q:'Look at those clouds! It ___ rain.',opts:['will','is going to','is raining','rains'],correct:1,exp:'IS GOING TO = present evidence of future. The clouds = evidence of rain.'},{topic:'Comparatives',q:'London is ___ than my hometown.',opts:['more bigger','more big','bigger','most big'],correct:2,exp:'Short adjectives: add -er. Big → BIGGER. "More" is for long adjectives.'},{topic:'Can / Cannot',q:'I ___ speak English very well yet, but I am learning.',opts:['can','cannot','could not','am not able'],correct:1,exp:'CANNOT = present inability. "Yet" suggests improvement is coming.'}],'B1-B2':[{topic:'Present Perfect vs Past Simple',q:'I ___ him yesterday but I ___ him today.',opts:["saw / haven't seen","have seen / didn't see","seen / not see","was seeing / haven't seen"],correct:0,exp:'SAW + "yesterday" = past simple. HAVE NOT SEEN + today = present perfect (still relevant).'},{topic:'Second Conditional',q:'If I ___ more money, I ___ a bigger flat.',opts:['had / would buy','have / will buy','would have / bought','had / will buy'],correct:0,exp:'Second conditional: If + PAST SIMPLE → WOULD + infinitive. Hypothetical situations.'},{topic:'Passive Voice',q:'The report ___ by the manager last week.',opts:['wrote','was written','has been written','is written'],correct:1,exp:'Past simple passive: WAS + past participle. "Last week" = specific past time.'},{topic:'Gerund vs Infinitive',q:'I enjoy ___ new places when I travel.',opts:['visit','to visit','visiting','visited'],correct:2,exp:'ENJOY is always followed by -ing. Also: avoid, miss, finish + -ing.'},{topic:'Reported Speech',q:'He said he ___ come to the party.',opts:['will','would','can','is going to'],correct:1,exp:'Reported speech: "will" → "would". Direct: "I will come" → he said he WOULD come.'},{topic:'Must / Should',q:'You ___ wear a seatbelt. Its the law.',opts:['should','might','must','could'],correct:2,exp:'MUST = strong obligation from laws. "Should" = advice, not obligation.'}],'B2':[{topic:'Third Conditional',q:'If she ___ harder, she ___ the exam.',opts:['studied / would pass','had studied / would have passed','studies / will pass','would study / passed'],correct:1,exp:'Third conditional: If + PAST PERFECT → WOULD HAVE + past participle. Impossible past.'},{topic:'Inversion for emphasis',q:'___ I realised the mistake had been mine.',opts:['Only when he called','When only he called','He called only when','Only he when called'],correct:0,exp:'"Only when" fronted = emphasis. B2-C1 sophisticated structure.'},{topic:'Wish / If only',q:'I wish I ___ speak French.',opts:['can','could','would','will'],correct:1,exp:'WISH + COULD = present ability we do not have.'},{topic:'Narrative Tenses',q:'She ___ home when she suddenly ___ a strange noise.',opts:['walked / was hearing','was walking / heard','had walked / heard','walked / heard'],correct:1,exp:'WAS WALKING = background. HEARD = sudden interruption. Classic narrative pattern.'}],'B2-C1':[{topic:'Subjunctive',q:'It is essential that every employee ___ the policy.',opts:['follows','follow','is following','followed'],correct:1,exp:'After "essential that", use base form — no -s, no -ed. Formal English.'},{topic:'Cleft Sentences',q:'Which is a correctly formed cleft sentence?',opts:['John called yesterday.','It was John who called.','John did call yesterday.','Calling was done by John.'],correct:1,exp:'"IT WAS + noun + WHO/THAT + rest" = cleft. Emphasises a specific element.'},{topic:'Nominalisation',q:'Which is most formal/academic?',opts:['We need to decide','A decision needs to be made','Deciding is necessary','We must decide now'],correct:1,exp:'Nominalisation = verb to noun. "A DECISION" instead of "decide". Key C1 skill.'},{topic:'Discourse Markers',q:'"The project was underfunded. ___, the team delivered great results."',opts:['Therefore','Nevertheless','Furthermore','As a result'],correct:1,exp:'NEVERTHELESS = contrast/unexpected outcome. "Therefore" = consequence. "Furthermore" = addition.'}],'C1':[{topic:'Inversion: No sooner',q:'"No sooner ___ down than the phone rang."',opts:['I had sat','had I sat','I sat','did I sat'],correct:1,exp:'After "no sooner", inversion required: HAD I SAT. Literary emphasis.'},{topic:'Abstract Nominalisation',q:'Most sophisticated version of "things changed quickly":',opts:['Things changed quickly.','The rapidity of change was notable.','It changed fast.','Change was quick.'],correct:1,exp:'"The rapidity of change" = abstract nominalisation. C1-C2 academic style.'},{topic:'Academic Hedging',q:'Which uses appropriate academic hedging?',opts:['The results prove it.','Results clearly show everything.','The results would appear to suggest a correlation.','Results maybe show something.'],correct:2,exp:'"WOULD APPEAR TO SUGGEST" = hedging. Academic writing avoids absolute claims.'}],'C1-C2':[{topic:'Rhetorical Emphasis',q:'Most emphatic way to express strong disagreement:',opts:["I don't agree at all.","I couldn't agree less.","I totally disagree.","I disagree completely."],correct:1,exp:'"COULD NOT AGREE LESS" = emphatic litotes. C2 speakers use this naturally.'},{topic:'Nuance in Modals',q:'"She might well have forgotten." This means:',opts:['She definitely forgot','It is quite possible she forgot','She did not forget','She should forget'],correct:1,exp:'"MIGHT WELL" = fairly strong possibility. Stronger than "might" alone.'}]};
+const QUIZ_BANKS={'A2-B1':{vocabulary:[{q:'What does "exhausted" mean?',opts:['Very happy','Very tired','Very hungry','Very cold'],c:1},{q:'"Affordable" means something that:',opts:['Is very expensive','You can pay for easily','Is very difficult','Is beautiful'],c:1},{q:'What does "commute" mean?',opts:['A type of food','Travel to and from work','A phone call','A meeting'],c:1},{q:'"Convenient" means:',opts:['Difficult to use','Easy and useful','Very old','Very big'],c:1},{q:'What does "punctual" mean?',opts:['Very loud','On time','Very fast','Very careful'],c:1},{q:'"Colleague" means:',opts:['A friend from school','Someone you work with','A family member','Your boss'],c:1},{q:'What does "fluent" mean in language?',opts:['Speaking slowly','Speaking easily and well','Speaking with an accent','Still learning'],c:1},{q:'"Reliable" describes someone you can:',opts:['Argue with','Trust and depend on','Disagree with','Learn from'],c:1},{q:'What does "neighbourhood" mean?',opts:['A big city','The area where you live','A foreign country','A type of house'],c:1},{q:'"Homesick" means you:',opts:['Are ill at home','Miss your home','Love your home','Are going home'],c:1}],grammar:[{q:'I ___ TV when my phone rang.',opts:['watched','was watching','am watching','watch'],c:1},{q:'She has lived in London ___ five years.',opts:['since','for','ago','during'],c:1},{q:'___ you ever tried sushi?',opts:['Did','Do','Have','Are'],c:2},{q:'He is ___ than his brother.',opts:['more tall','taller','tallest','most tall'],c:1},{q:'I ___ to the cinema last weekend.',opts:['go','gone','went','have gone'],c:2},{q:'There ___ some milk in the fridge.',opts:['are','is','be','were'],c:1},{q:'She ___ speak French very well.',opts:["can't","don't","isn't","hasn't"],c:0},{q:'___ do you live? In London.',opts:['What','When','Where','Who'],c:2},{q:'I ___ tired, so I went to bed early.',opts:['was','were','am','be'],c:0},{q:'We are going ___ a walk this afternoon.',opts:['do','make','for','at'],c:2}]},'B1-B2':{vocabulary:[{q:'What does "persist" mean?',opts:['To give up','To continue despite difficulty','To agree','To change your mind'],c:1},{q:'"Substantial" means:',opts:['Very small','Large and important','Temporary','Uncertain'],c:1},{q:'What does "inevitable" mean?',opts:['Very surprising','Cannot be avoided','Very unlikely','Can be changed'],c:1},{q:'"Proficient" means:',opts:['A complete beginner','Skilled and competent','Uncertain','Very slow'],c:1},{q:'What does "compromise" involve?',opts:['Winning an argument','Both sides giving something up','Refusing to negotiate','Forcing agreement'],c:1},{q:'"Dedicate" means to:',opts:['Avoid something','Give time and effort to','Refuse to do','Copy something'],c:1},{q:'What does "allocate" mean?',opts:['To find something','To give or assign resources','To remove','To copy'],c:1},{q:'"Versatile" describes someone who:',opts:['Is stubborn','Can do many different things','Is very organised','Works slowly'],c:1},{q:'What does "generate" mean?',opts:['To destroy','To produce or create','To transport','To measure'],c:1},{q:'What does "initiative" mean?',opts:['A type of law','The ability to act independently','A complaint','A meeting'],c:1}],grammar:[{q:'If I ___ more money, I would travel more.',opts:['have','had','would have','has'],c:1},{q:'The email ___ sent yesterday by the manager.',opts:['was','is','were','has'],c:0},{q:'She suggested ___ the meeting to Friday.',opts:['to move','move','moving','moved'],c:2},{q:'I wish I ___ speak Spanish.',opts:['can','could','would','will'],c:1},{q:'He said he ___ call me the next day.',opts:['will','would','can','is going to'],c:1},{q:'Despite ___ tired, she finished the report.',opts:['being','be','was','she was'],c:0},{q:'Not only ___ late, but he forgot the documents.',opts:['he arrived','arrived he','did he arrive','he did arrive'],c:2},{q:'By 2020, she ___ in London for ten years.',opts:['lived','has lived','had lived','was living'],c:2},{q:"It's time we ___ a decision.",opts:['make','made','have made','will make'],c:1},{q:'The problem ___ solved if we work together.',opts:['can be','can','is being','could'],c:0}]},'B2':{vocabulary:[{q:'What does "astute" mean?',opts:['Confused','Clever and quick to notice','Careless','Very loud'],c:1},{q:'"Meticulous" describes someone who is:',opts:['Careless','Very careful with detail','Very fast','Very creative'],c:1},{q:'What does "exacerbate" mean?',opts:['To improve','To make worse','To explain','To remove'],c:1},{q:'"Ambiguous" means:',opts:['Very clear','Open to more than one meaning','Impossible to read','Very long'],c:1},{q:'What does "undermine" mean?',opts:['To support','To weaken gradually','To build','To understand'],c:1},{q:'"Scrutinise" means to:',opts:['Ignore','Examine very carefully','Criticise publicly','Summarise'],c:1},{q:'What does "pragmatic" mean?',opts:['Idealistic','Dealing with things practically','Very emotional','Overly formal'],c:1},{q:'"Reticent" means:',opts:['Very talkative','Unwilling to speak about feelings','Very confident','Very organised'],c:1},{q:'What is a "prerequisite"?',opts:['Something optional','Something required beforehand','A type of exam','A recommendation'],c:1},{q:'"Impartial" means:',opts:['Very biased','Not favouring one side; fair','Very emotional','Very strict'],c:1}],grammar:[{q:'Had I known earlier, I ___ differently.',opts:['acted','would act','would have acted','had acted'],c:2},{q:'She recommended that he ___ a specialist.',opts:['sees','see','saw','had seen'],c:1},{q:'"Not only ___ the deadline, but she improved the design."',opts:['she met','met she','did she meet','she did meet'],c:2},{q:'"Rarely ___ such dedication in my career."',opts:['I have seen','have I seen','I had seen','had I seen'],c:1},{q:'It is high time companies ___ environmental responsibility.',opts:['take','took','have taken','are taking'],c:1},{q:'The results are thought ___ influenced by external factors.',opts:['to have been','having been','to be','being'],c:0},{q:'The more you practise, ___ you become.',opts:['more fluent','the more fluent','most fluent','fluenter'],c:1},{q:"If I ___ you, I would apply for that job.",opts:['am','was','were','had been'],c:2},{q:'"___ having submitted the report, she noticed an error."',opts:['After','Despite','Because','Although'],c:0},{q:'The proposal, along with its attachments, ___ been reviewed.',opts:['have','has','were','are'],c:1}]}};
 
-const PLAN_DESC={
-'A2-B1':{r:'Simple text: daily life & London',l:'A2-B1 BBC or pronunciation video',s:'Basic conversation practice',g:'Present/Past tenses, articles'},
-'B1-B2':{r:'Intermediate: news, travel, work',l:'TED Talk or intermediate BBC',s:'More complex scenarios',g:'Conditionals, passive, reported speech'},
-'B2':{r:'B2 level: Guardian/BBC style articles',l:'TED Talk or IELTS practice',s:'Formal & professional conversations',g:'Inversion, emphasis, advanced structures'},
-'B2-C1':{r:'Advanced articles and opinion pieces',l:'Advanced TED or IELTS band 7+',s:'Academic discussions with nuanced feedback',g:'Nominalisation, hedging, C1 academic style'},
-'C1':{r:'Native-level journalism and essays',l:'Authentic speech: documentaries',s:'Sophisticated debate & persuasion',g:'Rhetorical devices, literary structures'},
-'C1-C2':{r:'Complex literary & academic texts',l:'Authentic unscripted speech',s:'Near-native nuanced communication',g:'C2 written style and subtle structures'}
-};
-
-const ROADMAPS={
-'A2-B1':[{l:'✅ Present & Past Simple',s:'done'},{l:'🎯 Present Perfect',s:'current'},{l:'⬜ Future forms',s:'next'},{l:'⬜ Second Conditional',s:'next'},{l:'⬜ Passive Voice (basic)',s:'next'}],
-'B1-B2':[{l:'✅ Present Perfect & Past Simple',s:'done'},{l:'✅ Second Conditional',s:'done'},{l:'🎯 Third Conditional & Wish',s:'current'},{l:'⬜ Passive (all tenses)',s:'next'},{l:'⬜ Reported Speech',s:'next'}],
-'B2':[{l:'✅ All Conditionals',s:'done'},{l:'✅ Passive & Reported Speech',s:'done'},{l:'🎯 Inversion & Emphasis',s:'current'},{l:'⬜ Subjunctive',s:'next'},{l:'⬜ Complex Participle Clauses',s:'next'}],
-'B2-C1':[{l:'✅ Inversion & Emphasis',s:'done'},{l:'✅ Subjunctive',s:'done'},{l:'🎯 Nominalisation & Academic style',s:'current'},{l:'⬜ Hedging language',s:'next'},{l:'⬜ Complex discourse markers',s:'next'}],
-'C1':[{l:'✅ Nominalisation & Hedging',s:'done'},{l:'✅ Complex discourse markers',s:'done'},{l:'🎯 Rhetorical devices & nuance',s:'current'},{l:'⬜ Absolute & fronted clauses',s:'next'},{l:'⬜ C2 literary structures',s:'next'}],
-'C1-C2':[{l:'✅ All C1 structures',s:'done'},{l:'🎯 Rhetorical & literary style',s:'current'},{l:'⬜ C2 formal/academic writing',s:'next'}]
-};
-
-// Verified YouTube links - channels or stable video IDs confirmed working
-const VIDEOS=[
-{cat:'BBC Learning English',icon:'📺',level:'a2b1',title:'6 Minute English — Beginner Compilation',meta:'BBC Learning English',url:'https://www.youtube.com/watch?v=fcN0BXzK8bg'},
-{cat:'BBC Learning English',icon:'📺',level:'a2b1',title:'English at Work — Series Playlist',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96_zHuVg6Ecy2F7j4Aq4valQ'},
-{cat:'BBC Learning English',icon:'📺',level:'b1b2',title:'The English We Speak — Idioms',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96-wR1k2GExeaVOVIGfaPoBv'},
-{cat:'BBC Learning English',icon:'📺',level:'b1b2',title:'6 Minute English — All Topics Playlist',meta:'BBC Learning English',url:'https://www.youtube.com/playlist?list=PLcetZ6gSk96-FECmH9l7Vlx5VDigvgZpt'},
-{cat:'BBC Learning English',icon:'📺',level:'b2c1',title:'News Review — Advanced Vocabulary',meta:'BBC Learning English',url:'https://www.youtube.com/@bbclearningenglish/videos'},
-{cat:'BBC Learning English',icon:'📺',level:'c1',title:'BBC Learning English — Full Channel',meta:'Latest advanced content',url:'https://www.youtube.com/@bbclearningenglish'},
-{cat:'TED Talks',icon:'🎤',level:'b1b2',title:'How to Speak So People Want to Listen',meta:'Julian Treasure · TED (verified)',url:'https://www.youtube.com/watch?v=eIho2S0ZahI'},
-{cat:'TED Talks',icon:'🎤',level:'b2',title:'The Surprising Science of Happiness',meta:'Dan Gilbert · TED',url:'https://www.youtube.com/watch?v=RcGyVTAoXEU'},
-{cat:'TED Talks',icon:'🎤',level:'b2c1',title:'The Power of Vulnerability',meta:'Brene Brown · TED (verified)',url:'https://www.youtube.com/watch?v=iCvmsMzlF7o'},
-{cat:'TED Talks',icon:'🎤',level:'c1',title:'Steve Jobs Stanford Commencement 2005',meta:'Stanford University (verified)',url:'https://www.youtube.com/watch?v=UF8uR6Z6KLc'},
-{cat:'IELTS Preparation',icon:'📋',level:'b1b2',title:'IELTS Liz — Speaking Tips & Practice',meta:'IELTS Liz (2M+ subscribers)',url:'https://www.youtube.com/@IELTSLiz/videos'},
-{cat:'IELTS Preparation',icon:'📋',level:'b2',title:'E2 IELTS — Writing Task 2 Band 7+',meta:'E2 IELTS',url:'https://www.youtube.com/@E2IELTS/videos'},
-{cat:'IELTS Preparation',icon:'📋',level:'b2c1',title:'IELTS Liz — Listening Practice',meta:'IELTS Liz',url:'https://www.youtube.com/@IELTSLiz/playlists'},
-{cat:'IELTS Preparation',icon:'📋',level:'c1',title:'IELTS Simon — Advanced Strategies',meta:'IELTS Simon (band 9 teacher)',url:'https://www.youtube.com/@IeltsSimon9/videos'},
-{cat:'Natural English & Fluency',icon:'🇬🇧',level:'a2b1',title:"Rachel's English — Pronunciation Basics",meta:"Rachel's English",url:'https://www.youtube.com/@rachelsenglish/videos'},
-{cat:'Natural English & Fluency',icon:'🇬🇧',level:'b1b2',title:'English with Lucy — Intermediate',meta:'10M+ subscribers',url:'https://www.youtube.com/@EnglishwithLucy/videos'},
-{cat:'Natural English & Fluency',icon:'🇬🇧',level:'b2',title:'Speak English with Vanessa — Advanced',meta:'Vanessa',url:'https://www.youtube.com/@SpeakEnglishWithVanessa/videos'},
-{cat:'Natural English & Fluency',icon:'🇬🇧',level:'c1',title:'EngVid — C1 Advanced Grammar & Vocab',meta:'Professional teachers',url:'https://www.youtube.com/@engvid/videos'},
-];
-
-const GRAMMAR_BANKS={
-'A2-B1':[
-{topic:'Present Simple vs Continuous',q:'She ___ to school every day.',opts:['is going','goes','go','going'],correct:1,exp:'Present simple = habits/routines. "Every day" is the signal. She GOES = correct.'},
-{topic:'Past Simple',q:'I ___ a great film last night.',opts:['see','seen','saw','was seeing'],correct:2,exp:'Past simple = completed action at specific past time. "Last night" = specific time, so we use SAW.'},
-{topic:'Articles',q:'She is ___ teacher at ___ school near here.',opts:['a / a','a / the','the / a','the / the'],correct:1,exp:'"a teacher" = indefinite first mention. "the school" = specific one we already know about.'},
-{topic:'There is / There are',q:'___ a lot of people in London.',opts:['There is','There are','It is','They are'],correct:1,exp:'"People" is plural so we use THERE ARE. "There is" is for singular nouns.'},
-{topic:'Can / Cannot',q:'I ___ speak English very well yet, but I am learning.',opts:['can','cannot','could not','am not able'],correct:1,exp:'CANNOT = present inability. "Yet" suggests this may change in the future.'},
-{topic:'Prepositions of time',q:'My lesson starts ___ 9 o\'clock ___ Monday.',opts:['at / in','at / on','in / on','on / at'],correct:1,exp:'AT + exact time (9 o\'clock). ON + day (Monday). Very common pattern!'},
-{topic:'Comparatives',q:'London is ___ than my hometown.',opts:['more bigger','more big','bigger','most big'],correct:2,exp:'Short adjectives: add -er (big → bigger). "More" is used only with long adjectives.'},
-{topic:'Future: going to',q:'Look at those clouds! It ___ rain.',opts:['will','is going to','is raining','rains'],correct:1,exp:'IS GOING TO = present evidence of future event. The clouds = clear evidence of rain coming.'},
-],
-'B1-B2':[
-{topic:'Present Perfect vs Past Simple',q:'I ___ him yesterday but I ___ him today.',opts:["saw / haven't seen","have seen / didn't see","seen / not see","was seeing / haven't seen"],correct:0,exp:'SAW + "yesterday" = past simple. HAVE NOT SEEN + today = present perfect (still relevant now).'},
-{topic:'Second Conditional',q:'If I ___ more money, I ___ a bigger flat.',opts:['had / would buy','have / will buy','would have / bought','had / will buy'],correct:0,exp:'Second conditional: If + PAST SIMPLE → WOULD + infinitive. For hypothetical/unlikely situations.'},
-{topic:'Passive Voice',q:'The report ___ by the manager last week.',opts:['wrote','was written','has been written','is written'],correct:1,exp:'Past simple passive: WAS/WERE + past participle. "Last week" = specific past time.'},
-{topic:'Relative Clauses',q:'The woman ___ lives next door is a doctor.',opts:['which','who','whom','whose'],correct:1,exp:'WHO = for people in relative clauses. "Which" = things. "Whose" = possession.'},
-{topic:'Must / Should',q:'You ___ wear a seatbelt. It\'s the law.',opts:['should','might','must','could'],correct:2,exp:'MUST = strong obligation from rules/laws. "Should" = advice, not obligation.'},
-{topic:'Present Perfect Continuous',q:'She ___ English for three years.',opts:['learns','has learned','has been learning','is learning'],correct:2,exp:'HAS BEEN LEARNING = ongoing activity with duration up to now. "For three years" = duration.'},
-{topic:'Reported Speech',q:'He said he ___ come to the party.',opts:['will','would','can','is going to'],correct:1,exp:'Reported speech: "will" shifts to "would". Direct: "I will come" → Reported: he said he WOULD come.'},
-{topic:'Gerund vs Infinitive',q:'I enjoy ___ new places when I travel.',opts:['visit','to visit','visiting','visited'],correct:2,exp:'ENJOY is always followed by -ing. Also: avoid, miss, finish, consider + -ing form.'},
-],
-'B2':[
-{topic:'Third Conditional',q:'If she ___ harder, she ___ the exam.',opts:['studied / would pass','had studied / would have passed','studies / will pass','would study / passed'],correct:1,exp:'Third conditional: If + PAST PERFECT → WOULD HAVE + past participle. For impossible past situations.'},
-{topic:'Modal Passive',q:'This problem ___ immediately.',opts:['must solve','must be solved','should solve','is must solved'],correct:1,exp:'Modal passive: modal + BE + past participle. "Must be solved" = passive obligation.'},
-{topic:'Wish / If only',q:'I wish I ___ speak French. I\'m going to Paris.',opts:['can','could','would','will'],correct:1,exp:'WISH + COULD = present ability we do not have. Different from "I wish I had studied" (past regret).'},
-{topic:'Participle Clauses',q:'___ from Italy, Maria speaks perfect Italian.',opts:['Coming','Come','Having come','Came'],correct:0,exp:'Present participle clause = background info/reason. "Coming from Italy" explains WHY she speaks Italian.'},
-{topic:'Causative: have something done',q:'I need to ___ my car ___ this week.',opts:['have / fixed','get / fix','have / fix','make / fixed'],correct:0,exp:'HAVE + object + PAST PARTICIPLE = someone does it for you. This is the causative structure.'},
-{topic:'Inversion for emphasis',q:'___ I realised the mistake had been mine.',opts:['Only when he called','When only he called','He called only when','Only he when called'],correct:0,exp:'"Only when" fronted = emphasis. This B2-C1 structure signals sophisticated language use.'},
-{topic:'Narrative Tenses',q:'She ___ home when she suddenly ___ a strange noise.',opts:['walked / was hearing','was walking / heard','had walked / heard','walked / heard'],correct:1,exp:'WAS WALKING = background action. HEARD = sudden interruption. Classic narrative tense pattern.'},
-{topic:'Expressing Contrast',q:'___ she was tired, she continued working.',opts:['Although','Despite','However','Because'],correct:0,exp:'ALTHOUGH + subject + verb. "Despite" + noun/-ing. Different grammar follows each word!'},
-],
-'B2-C1':[
-{topic:'Subjunctive',q:'It is essential that every employee ___ the policy.',opts:['follows','follow','is following','followed'],correct:1,exp:'After "essential/important/vital that", use the BASE FORM — no -s, no -ed. Formal English.'},
-{topic:'Inversion: Negative Adverbs',q:'___ had I arrived when the meeting started.',opts:['Hardly','Hard','No sooner','Not only'],correct:0,exp:'HARDLY HAD I + past perfect: two very close events. Inversion is required after hardly/scarcely/barely.'},
-{topic:'Cleft Sentences',q:'Which is a correctly formed cleft sentence?',opts:['John called yesterday.','It was John who called.','John did call yesterday.','Calling was done by John.'],correct:1,exp:'"IT WAS + noun + WHO/THAT + rest" = cleft. Used to emphasise a specific element in the sentence.'},
-{topic:'Mixed Conditionals',q:'If I ___ more sleep last night, I ___ so tired now.',opts:["had / wouldn't be","had had / wouldn't be","had / won't be","have had / am not"],correct:1,exp:'Mixed conditional: past perfect (past cause) + WOULD BE (present result). Past → present consequence.'},
-{topic:'Nominalisation',q:'Which is the most formal/academic version?',opts:['We need to decide','A decision needs to be made','Deciding is necessary','We must decide now'],correct:1,exp:'Nominalisation = verb → noun. "A DECISION" instead of "decide". Key C1 academic writing skill.'},
-{topic:'Discourse Markers',q:'"The project was underfunded. ___, the team delivered great results."',opts:['Therefore','Nevertheless','Furthermore','As a result'],correct:1,exp:'NEVERTHELESS = contrast/unexpected outcome. "Therefore/as a result" = consequence. "Furthermore" = addition.'},
-{topic:'Complex Passive',q:'The new law is believed ___ a significant impact.',opts:['to have','having','to having','have'],correct:0,exp:'"Is believed TO HAVE" = complex passive reporting. Also: "is said to be", "is thought to have been".'},
-{topic:'Emphatic do/did',q:'She ___ try hard, but the exam was very difficult.',opts:['does','did','do','has'],correct:1,exp:'Emphatic DID adds force to a past positive statement. Acknowledges effort before presenting a contrast.'},
-],
-'C1':[
-{topic:'Inversion: No sooner',q:'"No sooner ___ down than the phone rang."',opts:['I had sat','had I sat','I sat','did I sat'],correct:1,exp:'After "no sooner", inversion is REQUIRED: auxiliary + subject. HAD I SAT. Literary emphasis structure.'},
-{topic:'Formal Connectors',q:'"___ his best efforts, the project failed."',opts:['Although','Despite','Even so','Notwithstanding'],correct:3,exp:'NOTWITHSTANDING = despite (more formal). Followed by noun phrase. C1/C2 formal written English.'},
-{topic:'Abstract Nominalisation',q:'Most sophisticated version of "things changed quickly":',opts:['Things changed quickly.','The rapidity of change was notable.','It changed fast.','Change was quick.'],correct:1,exp:'"The rapidity of change" = abstract nominalisation. C1-C2 academic and formal writing style.'},
-{topic:'Fronting for Emphasis',q:'Which sentence uses fronting correctly?',opts:['Never I have seen such a thing.','Such a thing I have never seen.','Such a thing never I have seen.','I never have seen such a thing.'],correct:1,exp:'FRONTING = moving element to start of sentence for emphasis. Literary and formal register.'},
-{topic:'Academic Hedging',q:'Which sentence uses appropriate academic hedging?',opts:['The results prove climate change is real.','The results clearly show everything.','The results would appear to suggest a correlation.','The results maybe suggest something.'],correct:2,exp:'"WOULD APPEAR TO SUGGEST" = strong hedging. Academic writing avoids absolute claims. C1-C2 tone.'},
-{topic:'Complex Reporting Verbs',q:'"You should apply for the job," she said. She ___ for the job.',opts:['said me to apply','told me to apply','recommended me to apply','urged me applying'],correct:1,exp:'TELL + object + to-infinitive is correct. "Recommend" takes -ing or that-clause, NOT object + to-inf.'},
-{topic:'Absolute Clauses',q:'Choose the correct absolute clause:',opts:['The weather being fine, we decided to walk.','Being fine the weather, we walked.','The weather was fine, we walked.','Fine weather, we decided walking.'],correct:0,exp:'"Noun + participle" = absolute clause. "The weather being fine" = since/because the weather was fine.'},
-{topic:'Formal Subjunctive',q:'"The committee recommended the proposal ___ reconsidered."',opts:['is','be','was','were'],correct:1,exp:'Formal subjunctive after "recommend/suggest/insist that" uses base form BE. C1-C2 academic standard.'},
-],
-'C1-C2':[
-{topic:'Rhetorical Emphasis',q:'Most emphatic way to express strong disagreement:',opts:["I don't agree at all.","I couldn't agree less.","I totally disagree.","I disagree completely."],correct:1,exp:'"COULD NOT AGREE LESS" = emphatic litotes (understatement for emphasis). C2 speakers use this naturally.'},
-{topic:'Nuance in Modal Meaning',q:'"She might well have forgotten." What does this mean?',opts:["She definitely forgot","It's quite possible she forgot","She didn't forget","She should forget"],correct:1,exp:'"MIGHT WELL" = fairly strong possibility. Stronger than "might" alone. C2 speakers master modal nuances.'},
-{topic:'Sophisticated Connectors',q:'"The evidence is compelling; ___, the policy has not changed."',opts:['therefore','notwithstanding which','furthermore','as a result'],correct:1,exp:'"NOTWITHSTANDING WHICH" = formal connector meaning "despite this fact". Rare but accurate C2 discourse.'},
-{topic:'Ellipsis',q:'"Would you like some coffee?" — "___, please."',opts:["Yes, I would like some","Yes, I would","Yes, some I'd like","Yes, I'd like it"],correct:1,exp:'Ellipsis = omit repeated information. "YES, I WOULD" = natural fluent English. Very natural at C2.'},
-]
-};
-
-const QUIZ_BANKS={
-'A2-B1':{
-vocabulary:[
-{q:'What does "exhausted" mean?',opts:['Very happy','Very tired','Very hungry','Very cold'],c:1},
-{q:'"Affordable" means something that:',opts:['Is very expensive','You can pay for easily','Is very difficult','Is very beautiful'],c:1},
-{q:'What does "neighbourhood" mean?',opts:['A big city','The area where you live','A foreign country','A type of house'],c:1},
-{q:'"Convenient" means:',opts:['Difficult to use','Easy and useful','Very old','Very big'],c:1},
-{q:'What is a "commute"?',opts:['A type of food','Travel to and from work','A type of phone call','A meeting'],c:1},
-{q:'"Homesick" means you:',opts:['Are ill at home','Miss your home','Love your home','Are going home'],c:1},
-{q:'What does "punctual" mean?',opts:['Very loud','On time','Very fast','Very careful'],c:1},
-{q:'"Colleague" means:',opts:['A friend from school','Someone you work with','A family member','Your boss'],c:1},
-{q:'What does "fluent" mean in language?',opts:['Speaking very slowly','Speaking easily and well','Speaking with an accent','Still learning'],c:1},
-{q:'"Reliable" describes someone you can:',opts:['Argue with','Trust and depend on','Disagree with','Learn from'],c:1},
-],
-grammar:[
-{q:'I ___ TV when my phone rang.',opts:['watched','was watching','am watching','watch'],c:1},
-{q:'She has lived in London ___ five years.',opts:['since','for','ago','during'],c:1},
-{q:'___ you ever tried sushi?',opts:['Did','Do','Have','Are'],c:2},
-{q:'He is ___ than his brother.',opts:['more tall','taller','tallest','most tall'],c:1},
-{q:'I ___ to the cinema last weekend.',opts:['go','gone','went','have gone'],c:2},
-{q:'There ___ some milk in the fridge.',opts:['are','is','be','were'],c:1},
-{q:'She ___ speak French very well.',opts:["can't","don't","isn't","hasn't"],c:0},
-{q:'We are going ___ a walk this afternoon.',opts:['do','make','for','at'],c:2},
-{q:'___ do you live? In London.',opts:['What','When','Where','Who'],c:2},
-{q:'I ___ tired, so I went to bed early.',opts:['was','were','am','be'],c:0},
-]
-},
-'B1-B2':{
-vocabulary:[
-{q:'What does "persist" mean?',opts:['To give up','To continue despite difficulty','To agree','To change your mind'],c:1},
-{q:'"Substantial" means:',opts:['Very small','Large and important','Temporary','Uncertain'],c:1},
-{q:'What does "allocate" mean?',opts:['To find something','To give or assign resources','To remove','To copy'],c:1},
-{q:'"Versatile" describes someone who:',opts:['Is stubborn','Can do many different things','Is very organised','Works slowly'],c:1},
-{q:'"Inevitable" means:',opts:['Very surprising','Cannot be avoided','Very unlikely','Can be changed'],c:1},
-{q:'What does "compromise" involve?',opts:['Winning an argument','Both sides giving something up','Refusing to negotiate','Forcing agreement'],c:1},
-{q:'"Proficient" means you are:',opts:['A complete beginner','Skilled and competent','Uncertain','Very slow'],c:1},
-{q:'What does "generate" mean?',opts:['To destroy','To produce or create','To transport','To measure'],c:1},
-{q:'"Dedicate" means to:',opts:['Avoid something','Give time and effort to something','Refuse to do','Copy something'],c:1},
-{q:'What does "initiative" mean?',opts:['A type of law','The ability to act independently','A formal complaint','A type of meeting'],c:1},
-],
-grammar:[
-{q:'If I ___ more money, I would travel more.',opts:['have','had','would have','has'],c:1},
-{q:'The email ___ sent yesterday by the manager.',opts:['was','is','were','has'],c:0},
-{q:'She suggested ___ the meeting to Friday.',opts:['to move','move','moving','moved'],c:2},
-{q:'I wish I ___ speak Spanish.',opts:['can','could','would','will'],c:1},
-{q:'He said he ___ call me the next day.',opts:['will','would','can','is going to'],c:1},
-{q:'Despite ___ tired, she finished the report.',opts:['being','be','was','she was'],c:0},
-{q:'Not only ___ late, but he forgot the documents.',opts:['he arrived','arrived he','did he arrive','he did arrive'],c:2},
-{q:'By 2020, she ___ in London for ten years.',opts:['lived','has lived','had lived','was living'],c:2},
-{q:"It's time we ___ a decision.",opts:['make','made','have made','will make'],c:1},
-{q:'The problem ___ solved if we work together.',opts:['can be','can','is being','could'],c:0},
-]
-},
-'B2':{
-vocabulary:[
-{q:'What does "astute" mean?',opts:['Confused','Clever and quick to notice','Careless','Very loud'],c:1},
-{q:'"Meticulous" describes someone who is:',opts:['Careless','Very careful with detail','Very fast','Very creative'],c:1},
-{q:'What does "exacerbate" mean?',opts:['To improve','To make worse','To explain','To remove'],c:1},
-{q:'"Ambiguous" means:',opts:['Very clear','Open to more than one meaning','Impossible to read','Very long'],c:1},
-{q:'What does "pragmatic" mean?',opts:['Idealistic','Dealing with things practically','Very emotional','Overly formal'],c:1},
-{q:'"Scrutinise" means to:',opts:['Ignore','Examine very carefully','Criticise publicly','Summarise'],c:1},
-{q:'What does "undermine" mean?',opts:['To support','To weaken or damage gradually','To build','To understand'],c:1},
-{q:'"Reticent" means:',opts:['Very talkative','Unwilling to speak about feelings','Very confident','Very organised'],c:1},
-{q:'What is a "prerequisite"?',opts:['Something optional','Something required beforehand','A type of exam','A recommendation'],c:1},
-{q:'"Impartial" means:',opts:['Very biased','Not favouring one side; fair','Very emotional','Very strict'],c:1},
-],
-grammar:[
-{q:'Had I known earlier, I ___ differently.',opts:['acted','would act','would have acted','had acted'],c:2},
-{q:'She recommended that he ___ a specialist.',opts:['sees','see','saw','had seen'],c:1},
-{q:'"Not only ___ the deadline, but she improved the design."',opts:['she met','met she','did she meet','she did meet'],c:2},
-{q:'"Rarely ___ such dedication in my career."',opts:['I have seen','have I seen','I had seen','had I seen'],c:1},
-{q:'It is high time companies ___ environmental responsibility.',opts:['take','took','have taken','are taking'],c:1},
-{q:'The results are thought ___ influenced by external factors.',opts:['to have been','having been','to be','being'],c:0},
-{q:'The more you practise, ___ you become.',opts:['more fluent','the more fluent','most fluent','fluenter'],c:1},
-{q:'The proposal, along with its attachments, ___ been reviewed.',opts:['have','has','were','are'],c:1},
-{q:'___ having submitted the report, she noticed an error.',opts:['After','Despite','Because','Although'],c:0},
-{q:"If I ___ you, I would apply for that job.",opts:['am','was','were','had been'],c:2},
-]
-},
-'B2-C1':{
-vocabulary:[
-{q:'What does "nuanced" mean?',opts:['Very obvious','Having subtle differences and complexity','Very simple','Very emotional'],c:1},
-{q:'"Superfluous" means:',opts:['Essential','Unnecessary and excessive','Very useful','Very expensive'],c:1},
-{q:'What does "corroborate" mean?',opts:['To contradict','To confirm or support','To ignore','To summarise'],c:1},
-{q:'"Ephemeral" describes something that is:',opts:['Permanent','Short-lived and temporary','Very important','Very large'],c:1},
-{q:'What does "proliferate" mean?',opts:['To decrease rapidly','To increase rapidly in number','To remain unchanged','To disappear'],c:1},
-{q:'"Alleviate" means to:',opts:['Make worse','Make something less severe','Remove completely','Ignore a problem'],c:1},
-{q:'What does "polarise" mean?',opts:['To bring together','To divide into two opposing groups','To confuse people','To resolve conflict'],c:1},
-{q:'"Substantiate" means to:',opts:['Weaken an argument','Provide evidence to support','Create a new theory','Ignore evidence'],c:1},
-{q:'What does "intrinsic" mean?',opts:['Coming from outside','Belonging naturally to something','Very important','Added later'],c:1},
-{q:'"Contentious" means:',opts:['Widely agreed upon','Causing disagreement or argument','Very boring','Very popular'],c:1},
-],
-grammar:[
-{q:'Which sentence uses "notwithstanding" correctly?',opts:['Notwithstanding, she left.','Notwithstanding the risks, she proceeded.','She notwithstanding left.','Notwithstanding of this.'],c:1},
-{q:'"It would appear that the data ___ a different conclusion."',opts:['suggest','suggests','is suggesting','has suggested'],c:0},
-{q:'Correct cleft for "The timing was the key problem":',opts:['It was the timing that was the key problem.','It is timing which key problem was.','The key problem it was timing.','Was the timing the key problem it.'],c:0},
-{q:'Which is a correctly formed absolute clause?',opts:['The sun setting, we decided to leave.','Setting the sun, we left.','The sun was setting we left.','We left and the sun setting.'],c:0},
-{q:'"She is widely regarded ___ one of the best in her field."',opts:['as being','to be','as to be','being'],c:0},
-{q:'"Much as I admire her work, ___"',opts:['but I disagree with this point.','I cannot agree with this conclusion.','however I disagree.','I disagreeing with this.'],c:1},
-{q:'Which hedge is most appropriate for academic writing?',opts:["The data proves everything.","The data clearly shows it's true.","The data would appear to suggest a trend.","The data maybe shows something."],c:2},
-{q:'"Were the policy to be implemented, ___"',opts:['the results are unpredictable.','there could be serious consequences.','it will cause problems.','consequences would expected.'],c:1},
-{q:'Most sophisticated way to link cause and effect:',opts:['Because of this, things changed.','This caused change.','The resultant shift can be attributed to this.','So things changed.'],c:2},
-{q:'"The rapidity of change ___." Most formal version:',opts:['surprised everyone','was surprising for everyone','was remarkable','done surprised all'],c:2},
-]
-}
-};
-
-// ── STATE ──
-let API_KEY='',chatHistory=[],vocab=[],grammarEx=[],curExIdx=0,quizType='vocabulary',quizQs=[],quizCur=0,quizScore=0;
-let readTimer=null,readSecs=1800,readRunning=false,mockTimer=null,mockSecs=3600;
+// STATE
+let API_KEY='',chatHistory=[],vocab=[],grammarExs=[],curExIdx=0;
+let quizType='vocabulary',quizQs=[],quizCur=0,quizScore=0;
+let readTimer=null,readSecs=1800,readRunning=false;
+let mockTimer=null,mockSecs=3600;
 let recognition=null,isRec=false,sessionStart=Date.now();
+let fcIndex=0,fcWords=[];
 let stats={streak:0,lastStudy:null,totalDays:0,sessions:0,weekly:[0,0,0,0,0,0,0],skills:{reading:0,listening:0,speaking:0,vocab:0,grammar:0},currentLevel:'A2-B1',mockTests:[]};
 
 window.onload=function(){
   API_KEY=localStorage.getItem('em_api_key')||'';
-  if(API_KEY) showApp();
+  if(API_KEY){document.getElementById('api-screen').classList.add('hidden');document.getElementById('app').classList.add('visible');}
   loadData();updateAllUI();initSpeech();
   const h=new Date().getHours();
   document.getElementById('dash-greeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+'!';
@@ -792,48 +640,28 @@ window.onload=function(){
 function saveApiKey(){
   const k=document.getElementById('api-key-input').value.trim();
   if(!k.startsWith('sk-ant-')){document.getElementById('api-error').style.display='block';return;}
-  API_KEY=k;localStorage.setItem('em_api_key',k);showApp();
+  API_KEY=k;localStorage.setItem('em_api_key',k);
+  document.getElementById('api-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
 }
-function resetApiKey(){if(confirm('Reset API key?')){localStorage.removeItem('em_api_key');API_KEY='';document.getElementById('app').classList.remove('visible');document.getElementById('api-screen').classList.remove('hidden');}}
-function showApp(){document.getElementById('api-screen').classList.add('hidden');document.getElementById('app').classList.add('visible');}
+function resetApiKey(){if(confirm('Reset API key?')){localStorage.removeItem('em_api_key');location.reload();}}
 
 function loadData(){
   vocab=JSON.parse(localStorage.getItem('em_vocab')||'[]');
   const s=localStorage.getItem('em_stats');
   if(s) stats=Object.assign({streak:0,lastStudy:null,totalDays:0,sessions:0,weekly:[0,0,0,0,0,0,0],skills:{reading:0,listening:0,speaking:0,vocab:0,grammar:0},currentLevel:'A2-B1',mockTests:[]},JSON.parse(s));
   const today=new Date().toDateString(),yesterday=new Date(Date.now()-86400000).toDateString();
-  if(stats.lastStudy!==today){
-    stats.streak=stats.lastStudy===yesterday?stats.streak+1:1;
-    stats.totalDays++;stats.lastStudy=today;saveData();
-  }
+  if(stats.lastStudy!==today){stats.streak=stats.lastStudy===yesterday?stats.streak+1:1;stats.totalDays++;stats.lastStudy=today;saveData();}
 }
 function saveData(){localStorage.setItem('em_vocab',JSON.stringify(vocab));localStorage.setItem('em_stats',JSON.stringify(stats));}
 function getLevel(){return stats.currentLevel||'A2-B1';}
 
-function checkLevelChange(band){
-  const cur=getLevel(),idx=LEVELS.indexOf(cur);
-  let next=cur;
-  if(band>=7.5&&idx<5) next='C1-C2';
-  else if(band>=6.5&&idx<4) next='C1';
-  else if(band>=6.0&&idx<3) next='B2-C1';
-  else if(band>=5.0&&idx<2) next='B2';
-  else if(band>=4.0&&idx<1) next='B1-B2';
-  else if(band<3.5&&idx>0) next=LEVELS[idx-1];
-
-  if(next!==cur){
-    const up=LEVELS.indexOf(next)>idx;
-    document.getElementById('lu-icon').textContent=up?'🎉':'💪';
-    document.getElementById('lu-title').textContent=up?'Level Up!':'Keep Consolidating!';
-    document.getElementById('lu-from').textContent=cur;
-    document.getElementById('lu-to').textContent=next;
-    document.getElementById('lu-message').textContent=up
-      ?'Your mock test results show real progress! Your content is now adjusted to your new level. Keep going!'
-      :'Based on your results, let\'s consolidate this level a bit more. This is the fastest way to really master it before moving up.';
-    document.getElementById('levelup-modal').classList.add('active');
-    stats.currentLevel=next;saveData();updateAllUI();
-  }
+function switchTab(name){
+  document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('ntab-'+name).classList.add('active');
 }
-function closeLevelUp(){document.getElementById('levelup-modal').classList.remove('active');}
 
 function updateAllUI(){
   const lv=getLevel();
@@ -842,7 +670,7 @@ function updateAllUI(){
   document.getElementById('dash-words').textContent=vocab.length;
   document.getElementById('streak-count').textContent=stats.streak;
   document.getElementById('stat-streak').textContent=stats.streak;
-  document.getElementById('stat-total-days').textContent=stats.totalDays;
+  document.getElementById('stat-days').textContent=stats.totalDays;
   document.getElementById('stat-words').textContent=vocab.length;
   document.getElementById('stat-sessions').textContent=stats.sessions;
   document.getElementById('vocab-count-badge').textContent=vocab.length+' words';
@@ -855,7 +683,7 @@ function updateAllUI(){
   document.getElementById('pm-listening').textContent=pd.l;
   document.getElementById('pm-speaking').textContent=pd.s;
   document.getElementById('pm-grammar').textContent=pd.g;
-  renderLevelTrack();renderRoadmap();renderWeeklyChart();renderMockHistory();renderVideos();loadVocabList();loadGrammarExercise();checkMockTestDue();
+  renderLevelTrack();renderRoadmap();renderWeeklyChart();renderMockHistory();renderVideos();loadVocabList();loadGrammarEx();checkMockDue();
 }
 
 function renderLevelTrack(){
@@ -868,8 +696,8 @@ function renderLevelTrack(){
   });
   document.getElementById('level-track').innerHTML=h;
   const next=LEVELS[idx+1];
-  const note=document.getElementById('lp-note');
-  note.innerHTML=next?`Next level: <span>${next}</span> — requires Mock Test band ${LEVEL_UP_THRESHOLDS[next]}+`:'<span>You have reached the top level! Keep polishing towards native fluency.</span>';
+  const thresholds={'B1-B2':4.0,'B2':5.0,'B2-C1':6.0,'C1':6.5,'C1-C2':7.5};
+  document.getElementById('lp-note').innerHTML=next?`Next level: <span>${next}</span> — requires Mock Test band ${thresholds[next]}+`:'<span>Top level reached! Keep polishing.</span>';
 }
 
 function renderRoadmap(){
@@ -879,10 +707,9 @@ function renderRoadmap(){
 
 function renderVideos(filter='all'){
   const lv=getLevel();
-  const levelOrder=['a2b1','b1b2','b2','b2c1','c1'];
   const keyMap={'A2-B1':'a2b1','B1-B2':'b1b2','B2':'b2','B2-C1':'b2c1','C1':'c1','C1-C2':'c1'};
-  const curKey=keyMap[lv]||'a2b1';
-  const curIdx=levelOrder.indexOf(curKey);
+  const levelOrder=['a2b1','b1b2','b2','b2c1','c1'];
+  const curIdx=levelOrder.indexOf(keyMap[lv]||'a2b1');
   const cats={};
   VIDEOS.forEach(v=>{
     const vi=levelOrder.indexOf(v.level);
@@ -896,7 +723,7 @@ function renderVideos(filter='all'){
     html+=`<div class="vid-cat"><h4>${cat}</h4><div class="vid-grid">`;
     vids.forEach(v=>{
       const lbl=v.level.toUpperCase().replace('A2B1','A2-B1').replace('B1B2','B1-B2').replace('B2C1','B2-C1');
-      html+=`<a class="vid-card" href="${v.url}" target="_blank" rel="noopener"><div class="vid-thumb">${v.icon}</div><div class="vid-info"><div class="vi-title">${v.title}</div><div class="vi-meta">${v.meta}</div><span class="vi-level ${v.level}">${lbl}</span></div></a>`;
+      html+=`<a class="vid-card" href="${v.url}" target="_blank" rel="noopener"><div class="vid-thumb">${v.icon}</div><div><div class="vi-title">${v.title}</div><div class="vi-meta">${v.meta}</div><span class="vi-level ${v.level}">${lbl}</span></div></a>`;
     });
     html+='</div></div>';
   });
@@ -907,7 +734,7 @@ function filterVideos(f,btn){document.querySelectorAll('.lf-btn').forEach(b=>b.c
 function renderMockHistory(){
   const list=document.getElementById('mock-history-list');
   if(!stats.mockTests||!stats.mockTests.length){list.innerHTML='<p style="font-size:11px;color:var(--text-muted)">No mock tests yet.</p>';return;}
-  list.innerHTML=stats.mockTests.map(m=>`<div class="mock-row"><div class="mock-band">Band ${m.band}</div><div class="mock-date">${m.date}</div>${m.levelChange?`<div class="mock-level-change">&#8594; ${m.levelChange}</div>`:''}</div>`).join('');
+  list.innerHTML=stats.mockTests.map(m=>`<div class="mock-row"><div class="mock-band">Band ${m.band}</div><div class="mock-date">${m.date}</div>${m.levelChange?`<div class="mock-lc">&#8594; ${m.levelChange}</div>`:''}</div>`).join('');
 }
 
 function renderWeeklyChart(){
@@ -919,197 +746,185 @@ function renderWeeklyChart(){
   sl.forEach(s=>{const p=Math.round(((sk[s]||0)/sm)*100);document.getElementById('sb-'+s).style.width=p+'%';document.getElementById('sp-'+s).textContent=(sk[s]||0)+'x';});
 }
 
-function switchTab(n){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+n).classList.add('active');
-  document.getElementById('ntab-'+n).classList.add('active');
+function checkMockDue(){
+  const last=parseInt(localStorage.getItem('em_last_mock')||'0');
+  document.getElementById('mock-banner').style.display=(Date.now()-last>14*24*60*60*1000&&last>0)?'flex':'none';
+}
+
+function markDone(section){
+  const item=document.getElementById('plan-'+section);
+  if(item&&!item.classList.contains('done')){
+    item.classList.add('done');
+    const ch=document.getElementById('pc-'+section);
+    if(ch)ch.innerHTML='&#10003;';
+    const done=document.querySelectorAll('.plan-item.done').length,pct=Math.round(done/5*100);
+    document.getElementById('dash-prog-bar').style.width=pct+'%';
+    document.getElementById('dash-prog-pct').textContent=pct+'%';
+    showToast(section.charAt(0).toUpperCase()+section.slice(1)+' done! ✅');
+  }
 }
 
 // READING
 async function generateReading(){
   const topic=document.getElementById('reading-topic').value,lv=getLevel();
-  const topicMap={daily:'daily life situations in London, including transport, shopping, work and social life',news:'current global news and affairs',science:'science and technology developments',culture:'arts, culture, films, music and entertainment',business:'business, work, careers and economics',ielts:'an IELTS Academic reading passage'};
-  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary (A2-B1 level). Short sentences. Common everyday words only.','B1-B2':'Use intermediate vocabulary (B1-B2). Mix of common and less frequent words.','B2':'Use upper-intermediate vocabulary (B2). Some idiomatic expressions. Guardian/BBC style.','B2-C1':'Use advanced vocabulary (B2-C1). Sophisticated sentence structures.','C1':'Use C1 vocabulary with nuance. Complex argumentation.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary.'};
-  document.getElementById('reading-body').innerHTML='<div style="padding:60px;text-align:center;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:13px">Generating '+lv+' level text...</p></div>';
+  const topicMap={daily:'daily life in London including transport, shopping, work and social life',news:'current global news and affairs',science:'science and technology',culture:'arts, culture and entertainment',business:'business, work and careers',ielts:'an IELTS Academic reading passage'};
+  const lvInstr={'A2-B1':'Use VERY SIMPLE vocabulary. Short sentences. Common everyday words only.','B1-B2':'Use intermediate vocabulary. Mix of common and some less frequent words.','B2':'Use upper-intermediate vocabulary. Some idiomatic expressions. Guardian/BBC style.','B2-C1':'Use advanced vocabulary. Sophisticated sentence structures.','C1':'Use C1 vocabulary with nuance. Complex argumentation.','C1-C2':'Use near-native C2 language. Academic and literary vocabulary.'};
+  document.getElementById('reading-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:13px">Generating '+lv+' level text...</p></div>';
   try{
-    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}.\nLanguage level: ${lv}. ${lvInstr[lv]}\nLength: 350-450 words.\nYou MUST respond with ONLY a raw JSON object. No markdown, no backticks, no explanation. Start with { end with }.\nJSON: {"title":"...","paragraphs":["p1","p2","p3","p4"]}`);
+    const res=await callClaude(`Generate an English reading passage about ${topicMap[topic]}. Language level: ${lv}. ${lvInstr[lv]} Length: 350-450 words. You MUST respond with ONLY a raw JSON object. No markdown, no backticks. Start with { end with }. JSON: {"title":"...","paragraphs":["p1","p2","p3","p4"]}`);
     let cleaned=res.trim();
     if(cleaned.startsWith('`')){cleaned=cleaned.replace(/^```(json)?/,'').replace(/```$/,'').trim();}
     const si=cleaned.indexOf('{'),ei=cleaned.lastIndexOf('}');
     if(si===-1||ei===-1) throw new Error('No JSON found');
     const data=JSON.parse(cleaned.substring(si,ei+1));
-    window._currentReadingText=data.paragraphs.join(' ');
+    window._readingText=data.paragraphs.join(' ');
     document.getElementById('reading-title').textContent=data.title;
-    document.getElementById('fs-title').textContent=data.title;
-    let html=`<h2>${data.title}</h2><p style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">💡 Click any word to see its meaning. Click again to save it to your dictionary.</p>`;
+    document.getElementById('fs-title-text').textContent=data.title;
+    let html=`<h2>${data.title}</h2><p style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">💡 Click any word to see its meaning. Save words you want to remember.</p>`;
     data.paragraphs.forEach(p=>{
       const tokens=p.split(/(\s+)/);
-      const wordHtml=tokens.map(token=>{
+      const whtml=tokens.map(token=>{
         if(/^\s+$/.test(token)) return token;
         const clean=token.replace(/^[^a-zA-Z']+|[^a-zA-Z']+$/g,'');
-        if(!clean) return token;
-        return `<span class="clickable-word" data-word="${clean}" onclick="wordClick(this,'${clean}')">${token}</span>`;
+        if(!clean||clean.length<2) return token;
+        return `<span class="clickable-word" data-word="${clean}" onclick="wordClick(this,'${clean.replace(/'/g,"\\'")}',event)">${token}</span>`;
       }).join('');
-      html+=`<p>${wordHtml}</p>`;
+      html+=`<p>${whtml}</p>`;
     });
-    html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-      <button onclick="speakText(window._currentReadingText)" style="padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊 Listen to text</button>
-      <button onclick="startPronunciationCheck()" style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;" id="pronun-btn">🎤 Read aloud & check pronunciation</button>
-    </div>
-    <div id="pronun-result" style="margin-top:12px;display:none;"></div>`;
-    document.getElementById('reading-body').innerHTML=html;
+    html+=`<div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button onclick="speakText(window._readingText)" style="padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊 Listen to text</button>
+      <button onclick="startPronCheck()" id="pron-btn" style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🎤 Read aloud &amp; check pronunciation</button>
+    </div><div id="pron-result" style="margin-top:12px;display:none;"></div>`;
+    document.getElementById('reading-content').innerHTML=html;
     document.getElementById('fs-body').innerHTML=html;
   }catch(e){
-    document.getElementById('reading-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error: '+e.message+'</div>';
+    document.getElementById('reading-content').innerHTML=`<div style="padding:40px;text-align:center;color:var(--red)">Error: ${e.message}</div>`;
   }
 }
 
-async function wordClick(el, word){
+async function wordClick(el,word,e){
   if(!word||word.length<2) return;
-  // Toggle saved state
-  if(el.classList.contains('word-saved')){
-    showToast('"'+word+'" already in dictionary!');
-    return;
-  }
-  // Show meaning first
   const hint=document.getElementById('word-hint');
-  hint.style.display='block';
   const rect=el.getBoundingClientRect();
-  hint.style.left=Math.min(rect.left,window.innerWidth-230)+'px';
-  hint.style.top=(rect.bottom+8+window.scrollY)+'px';
-  hint.innerHTML='Loading... <small style="color:#aaa">(click to save)</small>';
+  hint.style.display='block';
+  hint.style.left=Math.min(rect.left,window.innerWidth-250)+'px';
+  hint.style.top=(rect.bottom+window.scrollY+8)+'px';
+  hint.innerHTML='Loading...';
   try{
-    const def=await callClaude(`Define "${word}" in one simple sentence. Then give a very short example. Format exactly:\nMEANING: ...\nEXAMPLE: ...`);
-    const meaning=def.match(/MEANING:\s*(.+)/i)?.[1]?.trim()||def;
-    const example=def.match(/EXAMPLE:\s*(.+)/i)?.[1]?.trim()||'';
-    hint.innerHTML=`<strong>${word}</strong><br>${meaning}${example?'<br><em style="color:#ccc">'+example+'</em>':''}<br><button onclick="saveWordFromReading('${word}','${meaning.replace(/'/g,"\\'")}','${example.replace(/'/g,"\\'")}');document.getElementById('word-hint').style.display='none';" style="margin-top:6px;padding:3px 10px;background:#4a7c2f;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;">+ Save to dictionary</button>`;
-  }catch(e){hint.textContent='Could not load definition.';}
-  // Hide on outside click
+    const def=await callClaude(`Define "${word}" in one simple sentence. Give a very short example. Format exactly:\nMEANING: ...\nEXAMPLE: ...`);
+    const meaning=(def.match(/MEANING:\s*(.+)/i)||[])[1]||def;
+    const example=(def.match(/EXAMPLE:\s*(.+)/i)||[])[1]||'';
+    const safe=word.replace(/'/g,"\\'");
+    const safeMeaning=meaning.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    const safeEx=example.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    hint.innerHTML=`<strong>${word}</strong><br><span style="color:#ddd">${meaning}</span>${example?`<br><em style="color:#aaa">${example}</em>`:''}<br><button onclick="saveWordFromReading('${safe}','${safeMeaning}','${safeEx}');document.getElementById('word-hint').style.display='none';" style="margin-top:6px;padding:3px 10px;background:#4a7c2f;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-family:Inter,sans-serif;">+ Save to dictionary</button>`;
+  }catch(err){hint.textContent='Could not load definition.';}
   setTimeout(()=>{
     document.addEventListener('click',function h(ev){
-      if(!ev.target.closest('#word-hint')&&!ev.target.classList.contains('clickable-word')){
-        hint.style.display='none';document.removeEventListener('click',h);
-      }
+      if(!ev.target.closest('#word-hint')&&!ev.target.classList.contains('clickable-word')){hint.style.display='none';document.removeEventListener('click',h);}
     });
   },100);
 }
 
-function saveWordFromReading(word, meaning, example){
-  if(vocab.find(v=>v.word.toLowerCase()===word.toLowerCase())){showToast('"'+word+'" already in dictionary!');return;}
-  vocab.push({word,tr:'',def:meaning,ex:example,date:Date.now(),fromReading:true});
+function saveWordFromReading(word,meaning,example){
+  if(vocab.find(v=>v.word.toLowerCase()===word.toLowerCase())){showToast('"'+word+'" already saved!');return;}
+  vocab.push({word,tr:'',def:meaning,ex:example,date:Date.now()});
   saveData();
-  // Mark word as saved in reading
   document.querySelectorAll('.clickable-word').forEach(el=>{
-    if(el.dataset.word&&el.dataset.word.toLowerCase()===word.toLowerCase()){
-      el.classList.add('word-saved');
-      el.style.background='#b8e6a0';
-      el.style.borderRadius='2px';
-    }
+    if(el.dataset.word&&el.dataset.word.toLowerCase()===word.toLowerCase()){el.classList.add('word-saved');}
   });
-  showToast('"'+word+'" saved to dictionary! ✓');
-  updateAllUI();
+  showToast('"'+word+'" saved! ✓');updateAllUI();
 }
 
-let pronunciationRec=null,isPronRecording=false;
-function startPronunciationCheck(){
-  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){showToast('Speech recognition not supported. Use Chrome.');return;}
-  const btn=document.getElementById('pronun-btn');
-  if(isPronRecording){if(pronunciationRec) pronunciationRec.stop();return;}
+let pronRec=null,isPronRec=false;
+function startPronCheck(){
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){showToast('Speech not supported. Use Chrome.');return;}
+  const btn=document.getElementById('pron-btn');
+  if(isPronRec){if(pronRec)pronRec.stop();return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  pronunciationRec=new SR();
-  pronunciationRec.continuous=true;
-  pronunciationRec.interimResults=false;
-  pronunciationRec.lang='en-GB';
+  pronRec=new SR();pronRec.continuous=true;pronRec.interimResults=false;pronRec.lang='en-GB';
   let transcript='';
-  pronunciationRec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal) transcript+=e.results[i][0].transcript+' ';}};
-  pronunciationRec.onend=async()=>{
-    isPronRecording=false;
-    btn.textContent='🎤 Read aloud & check pronunciation';
-    btn.style.background='var(--accent)';
-    if(!transcript.trim()){showToast('No speech detected. Try again.');return;}
-    const result=document.getElementById('pronun-result');
-    result.style.display='block';
-    result.innerHTML='<div style="padding:12px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text-muted)">Analysing your pronunciation...</div>';
+  pronRec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)transcript+=e.results[i][0].transcript+' ';}};
+  pronRec.onend=async()=>{
+    isPronRec=false;btn.textContent='🎤 Read aloud & check pronunciation';btn.style.background='var(--accent)';
+    if(!transcript.trim()){showToast('No speech detected.');return;}
+    const result=document.getElementById('pron-result');result.style.display='block';
+    result.innerHTML='<div style="padding:10px;background:var(--bg);border-radius:var(--radius);font-size:12px;color:var(--text-muted)">Analysing...</div>';
     try{
-      const feedback=await callClaude(`Compare this original English text with what the student read aloud. Student is a Turkish speaker at ${getLevel()} level.
-ORIGINAL: "${(window._currentReadingText||'').substring(0,500)}"
+      const fb=await callClaude(`Compare this original text with what the student read aloud. Student is Turkish speaker at ${getLevel()} level.
+ORIGINAL: "${(window._readingText||'').substring(0,400)}"
 STUDENT READ: "${transcript.trim()}"
-Give pronunciation and reading feedback:
-1. Accuracy score (X/10)
-2. Words skipped or mispronounced (up to 5)
-3. What they did well
-4. 1 tip for improvement
-Keep it encouraging, max 150 words.`);
-      result.innerHTML=`<div style="padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);font-size:12px;line-height:1.7;">${feedback.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
-    }catch(e){result.innerHTML='<div style="padding:12px;color:var(--red);font-size:12px">Error analysing pronunciation.</div>';}
+Give: 1. Accuracy score (X/10) 2. Words mispronounced (up to 5) 3. What they did well 4. One tip. Max 150 words. Be encouraging.`);
+      result.innerHTML=`<div style="padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);font-size:12px;line-height:1.7;">${fb.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
+    }catch(e){result.innerHTML='<div style="padding:10px;color:var(--red);font-size:12px">Error analysing.</div>';}
   };
-  pronunciationRec.start();
-  isPronRecording=true;
-  btn.textContent='⏹ Stop recording';
-  btn.style.background='var(--red)';
+  pronRec.start();isPronRec=true;btn.textContent='⏹ Stop recording';btn.style.background='var(--red)';
   showToast('Recording... read the text aloud, then press Stop');
 }
 
+let readTimer2=null;
+function toggleReadingTimer(){
+  if(readRunning){clearInterval(readTimer2);readRunning=false;document.getElementById('reading-timer-btn').innerHTML='&#9654;';}
+  else{
+    readRunning=true;document.getElementById('reading-timer-btn').textContent='⏸';
+    readTimer2=setInterval(()=>{
+      readSecs--;
+      if(readSecs<=0){clearInterval(readTimer2);readRunning=false;document.getElementById('reading-timer-btn').innerHTML='&#9654;';showToast('Reading complete! ✅');markDone('reading');readSecs=1800;}
+      const m=Math.floor(readSecs/60),s=readSecs%60,str=m+':'+String(s).padStart(2,'0');
+      document.getElementById('reading-timer').textContent=str;
+      document.getElementById('fs-timer').textContent=str;
+      document.getElementById('fs-prog-fill').style.width=((1800-readSecs)/1800*100)+'%';
+      const u=readSecs<300;
+      document.getElementById('reading-timer').classList.toggle('urgent',u);
+      document.getElementById('fs-timer').classList.toggle('urgent',u);
+    },1000);
+  }
+}
+function openFullscreen(){document.getElementById('fs-overlay').classList.add('active');if(!readRunning)toggleReadingTimer();}
+function closeFullscreen(){document.getElementById('fs-overlay').classList.remove('active');}
+
+// SPEAKING
 async function sendMessage(){
   const input=document.getElementById('chat-input'),text=input.value.trim();
   if(!text) return;
   input.value='';input.style.height='auto';
   addMsg('user',text);chatHistory.push({role:'user',content:text});
   const lv=getLevel(),scenario=document.getElementById('chat-scenario').value;
-  const scenCtx={daily:'daily life in London',work:'professional workplace and business',travel:'travel and tourism',academic:'academic topics and IELTS-style discussions'};
-  const lvInstr={
-    'A2-B1':'Use very simple English (A2-B1). Short sentences. Common vocabulary only. Speak slowly and clearly. Gently introduce 1-2 new useful words per message.',
-    'B1-B2':'Use intermediate English (B1-B2). Clear sentences. Some idiomatic expressions. Introduce B2 vocabulary naturally.',
-    'B2':'Use upper-intermediate English (B2). Natural pace. Idiomatic language. Occasionally introduce B2-C1 vocabulary.',
-    'B2-C1':'Use advanced English (B2-C1). Sophisticated vocabulary naturally. Complex sentences. Introduce C1 structures.',
-    'C1':'Use C1 level English. Nuanced vocabulary. Complex argumentation. Occasionally use C2 expressions naturally.',
-    'C1-C2':'Use near-native C2 English. Subtle nuance. Literary and academic vocabulary. Full native-like fluency.'
-  };
-  const system=`You are an expert English coach for a Turkish speaker living in London, currently at ${lv} level targeting C1-C2.
-${lvInstr[lv]}
-Conversation topic: ${scenCtx[scenario]}.
-IMPORTANT RULES:
-- Be a natural conversation partner, NOT a teacher mid-conversation
-- Do NOT correct grammar mistakes while talking
-- Respond in 2-4 sentences maximum
-- Be encouraging, warm and engaging
-- Detailed feedback comes ONLY when the user clicks "Get Feedback"`;
+  const scenCtx={daily:'daily life in London',work:'professional workplace',travel:'travel and tourism',academic:'academic topics and IELTS discussions'};
+  const lvInstr={'A2-B1':'Use very simple English. Short sentences. Common vocabulary only. Gently introduce 1-2 new words.','B1-B2':'Use intermediate English. Clear sentences. Some idiomatic expressions.','B2':'Use upper-intermediate English. Natural pace. Idiomatic language.','B2-C1':'Use advanced English. Sophisticated vocabulary. Complex sentences.','C1':'Use C1 English. Nuanced vocabulary. Complex argumentation.','C1-C2':'Use near-native C2 English. Full fluency.'};
+  const system=`You are an expert English coach for a Turkish speaker in London at ${lv} level targeting C1-C2. ${lvInstr[lv]} Topic: ${scenCtx[scenario]}. Be a natural conversation partner. Do NOT correct mistakes mid-conversation. Respond in 2-4 sentences. Be encouraging.`;
   showTyping();
   try{
     const reply=await callClaude(text,system,chatHistory.slice(-10));
-    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});setTimeout(()=>speakText(reply),200);
-  }catch(e){removeTyping();addMsg('assistant','Connection error. Please check your API key.');}
+    removeTyping();addMsg('assistant',reply);chatHistory.push({role:'assistant',content:reply});
+    setTimeout(()=>speakText(reply),200);
+  }catch(e){removeTyping();addMsg('assistant','Connection error. Check your API key.');}
 }
 
 async function requestFeedback(){
   if(chatHistory.length<2){showToast('Have a conversation first!');return;}
   const panel=document.getElementById('feedback-panel'),content=document.getElementById('feedback-content');
-  panel.classList.add('visible');
-  content.innerHTML='<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  panel.classList.add('visible');content.innerHTML='<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
   const lv=getLevel(),userMsgs=chatHistory.filter(m=>m.role==='user').map(m=>m.content).join('\n');
   try{
-    const fb=await callClaude(`You are an English coach. The student is at ${lv} level targeting C1-C2. Turkish speaker in London.
-Analyse these messages from the student: "${userMsgs}"
-
-Give structured feedback:
-1. **Overall** (2 sentences, mention current level progress)
-2. **Grammar Errors** (list: wrong version → correct version + short explanation, add Turkish note in brackets where helpful)
-3. **Better Alternatives** (what they said → more sophisticated ${lv}+ version)
-4. **New Words to Learn** (3-4 words/phrases appropriate for moving to next level)
-5. **What was good** (positive reinforcement — be specific)
-6. **Next focus** (1 specific thing to practise next time)
-
-Be constructive and motivating. Keep explanations clear and practical.`);
+    const fb=await callClaude(`You are an English coach. Student is at ${lv} level targeting C1-C2. Turkish speaker in London.
+Analyse: "${userMsgs}"
+Give feedback:
+1. **Overall** (2 sentences)
+2. **Grammar Errors** (wrong → correct + Turkish note in brackets)
+3. **Better Alternatives** (their phrase → C1 version)
+4. **New Words to Learn** (3-4 words)
+5. **What was good**
+6. **Next focus** (1 thing to practise)`);
     content.innerHTML=fb.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
     stats.sessions++;saveData();markDone('speaking');
-  }catch(e){content.innerHTML='Error generating feedback. Please try again.';}
+  }catch(e){content.innerHTML='Error. Try again.';}
 }
 
 function newChat(){
-  if(!confirm('Start new conversation? Current chat will be cleared.')) return;
+  if(!confirm('Start new conversation?')) return;
   chatHistory=[];
-  document.getElementById('chat-messages').innerHTML=`<div class="msg assistant"><div class="msg-avatar">AI</div><div><div class="msg-bubble" id="initial-msg">Ready for a new conversation! Choose a scenario and let's go.</div><div class="msg-actions"><button class="msg-btn" onclick="speakText(document.getElementById('initial-msg').textContent)">🔊 Listen</button></div></div></div>`;
+  document.getElementById('chat-messages').innerHTML=`<div class="msg assistant"><div class="msg-avatar">AI</div><div><div class="msg-bubble" id="initial-msg">Ready for a new conversation! Choose a scenario and lets go.</div><div class="msg-actions"><button class="msg-btn" onclick="speakText(document.getElementById('initial-msg').textContent)">🔊 Listen</button></div></div></div>`;
   document.getElementById('feedback-panel').classList.remove('visible');
 }
 
@@ -1125,21 +940,20 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 
 // SPEECH
 function initSpeech(){
-  if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    recognition=new SR();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-GB';
-    recognition.onresult=e=>{if(e.results[e.resultIndex].isFinal){const t=e.results[e.resultIndex][0].transcript;document.getElementById('chat-input').value=t;recognition.stop();}};
-    recognition.onend=()=>{isRec=false;document.getElementById('mic-btn').classList.remove('recording');const t=document.getElementById('chat-input').value.trim();if(t){setTimeout(()=>sendMessage(),100);}};
-  }
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-GB';
+  recognition.onresult=e=>{if(e.results[e.resultIndex].isFinal){document.getElementById('chat-input').value=e.results[e.resultIndex][0].transcript;recognition.stop();}};
+  recognition.onend=()=>{isRec=false;document.getElementById('mic-btn').classList.remove('recording');const t=document.getElementById('chat-input').value.trim();if(t)setTimeout(()=>sendMessage(),100);};
 }
-function toggleMic(){if(!recognition){showToast('Speech not supported in this browser.');return;}if(isRec){recognition.stop();isRec=false;document.getElementById('mic-btn').classList.remove('recording');}else{recognition.start();isRec=true;document.getElementById('mic-btn').classList.add('recording');showToast('Listening...');}}
+function toggleMic(){if(!recognition){showToast('Speech not supported. Use Chrome.');return;}if(isRec){recognition.stop();isRec=false;document.getElementById('mic-btn').classList.remove('recording');}else{recognition.start();isRec=true;document.getElementById('mic-btn').classList.add('recording');showToast('Listening...');}}
 function speakText(text){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]*>/g,''));u.lang='en-GB';u.rate=0.9;const v=window.speechSynthesis.getVoices().find(v=>v.lang==='en-GB');if(v)u.voice=v;window.speechSynthesis.speak(u);}
 
-// VOCABULARY
+// VOCAB
 function addVocab(){
   const word=document.getElementById('v-word').value.trim();
   if(!word){showToast('Enter a word!');return;}
-  if(vocab.find(v=>v.word.toLowerCase()===word.toLowerCase())){showToast('Already in dictionary!');return;}
+  if(vocab.find(v=>v.word.toLowerCase()===word.toLowerCase())){showToast('Already saved!');return;}
   vocab.push({word,tr:document.getElementById('v-tr').value.trim(),def:document.getElementById('v-def').value.trim(),ex:document.getElementById('v-ex').value.trim(),date:Date.now()});
   saveData();loadVocabList();['v-word','v-tr','v-def','v-ex'].forEach(id=>document.getElementById(id).value='');
   showToast('Word added! 📝');updateAllUI();markDone('vocabulary');
@@ -1147,43 +961,87 @@ function addVocab(){
 function deleteVocab(idx){vocab.splice(idx,1);saveData();loadVocabList();updateAllUI();}
 function loadVocabList(filter='all'){
   const list=document.getElementById('vocab-list');
+  document.getElementById('flashcard-area').style.display='none';
+  list.style.display='flex';
   let words=filter==='recent'?[...vocab].sort((a,b)=>b.date-a.date).slice(0,20):[...vocab];
-  if(!words.length){list.innerHTML='<div class="vocab-empty">No words yet. Add some above or save from reading!</div>';return;}
+  if(!words.length){list.innerHTML='<div class="vocab-empty">No words yet. Click any word while reading to save it!</div>';return;}
   list.innerHTML=words.map(v=>`<div class="vocab-item"><div><div class="vi-word">${v.word}</div>${v.tr?`<div class="vi-tr">${v.tr}</div>`:''}</div><div class="vi-def">${v.def||'<span style="color:var(--text-light)">No definition</span>'}${v.ex?`<div class="vi-ex">"${v.ex}"</div>`:''}</div><button class="vi-del" onclick="deleteVocab(${vocab.indexOf(v)})">&#x2715;</button></div>`).join('');
-  document.getElementById('vocab-count-badge').textContent=vocab.length+' words';
 }
-function filterVocab(type,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(type==='flashcard'){startFlashCards();return;}document.getElementById('flashcard-area').style.display='none';document.getElementById('vocab-list').style.display='flex';loadVocabList(type);}
+function filterVocab(type,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  if(type==='flashcard'){startFlashCards();return;}
+  loadVocabList(type);
+}
+
+// FLASH CARDS
+function startFlashCards(){
+  fcWords=[...vocab].sort(()=>Math.random()-.5);
+  if(!fcWords.length){showToast('No words saved yet!');return;}
+  fcIndex=0;
+  document.getElementById('vocab-list').style.display='none';
+  document.getElementById('flashcard-area').style.display='block';
+  renderFC();
+}
+function renderFC(){
+  const area=document.getElementById('flashcard-area');
+  if(!fcWords.length){area.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:13px;">No words.</p>';return;}
+  const w=fcWords[fcIndex];
+  area.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <button onclick="exitFC()" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;color:var(--text-muted);font-family:Inter,sans-serif;">Exit cards</button>
+      <div class="fc-counter">${fcIndex+1} / ${fcWords.length}</div>
+      <button onclick="speakText('${w.word}')" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊</button>
+    </div>
+    <div class="flashcard" onclick="revealFC(this)">
+      <div class="fc-word">${w.word}</div>
+      <div class="fc-hint">Tap to reveal</div>
+      <div class="fc-answer" id="fc-ans">
+        ${w.tr?`<div style="font-size:16px;font-weight:500;color:var(--amber);margin-bottom:6px;">${w.tr}</div>`:''}
+        ${w.def?`<div style="font-size:13px;color:var(--text-muted);">${w.def}</div>`:''}
+        ${w.ex?`<div style="font-size:12px;font-style:italic;color:var(--text-light);margin-top:8px;">"${w.ex}"</div>`:''}
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button onclick="fcNav(-1)" style="padding:8px 20px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;" ${fcIndex===0?'disabled':''}>&#8592; Prev</button>
+      <button onclick="fcNav(1)" style="padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;">${fcIndex===fcWords.length-1?'Restart &#8635;':'Next &#8594;'}</button>
+    </div>`;
+}
+function revealFC(el){const ans=document.getElementById('fc-ans');const hint=el.querySelector('.fc-hint');if(ans){ans.style.display='block';}if(hint)hint.style.display='none';}
+function fcNav(dir){fcIndex+=dir;if(fcIndex>=fcWords.length)fcIndex=0;if(fcIndex<0)fcIndex=fcWords.length-1;renderFC();}
+function exitFC(){document.getElementById('flashcard-area').style.display='none';document.getElementById('vocab-list').style.display='flex';document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.filter-btn').classList.add('active');loadVocabList('all');}
 
 // GRAMMAR
-function loadGrammarExercise(){
+function loadGrammarEx(){
   const lv=getLevel(),bank=GRAMMAR_BANKS[lv]||GRAMMAR_BANKS['A2-B1'];
-  if(!grammarEx.length||grammarEx[0]._lv!==lv){grammarEx=bank.map(e=>({...e,_lv:lv})).sort(()=>Math.random()-.5);curExIdx=0;}
-  showExercise(curExIdx);
+  if(!grammarExs.length||grammarExs[0]._lv!==lv){grammarExs=bank.map(e=>({...e,_lv:lv})).sort(()=>Math.random()-.5);curExIdx=0;}
+  showEx(curExIdx);
 }
-function showExercise(idx){
-  if(idx>=grammarEx.length){idx=0;grammarEx=grammarEx.sort(()=>Math.random()-.5);}
-  const ex=grammarEx[idx];
+function showEx(idx){
+  if(idx>=grammarExs.length){idx=0;grammarExs=grammarExs.sort(()=>Math.random()-.5);}
+  const ex=grammarExs[idx];
   document.getElementById('ex-topic').textContent=ex.topic;
   document.getElementById('ex-question').textContent=ex.q;
-  document.getElementById('ex-explanation').textContent=ex.exp;
-  document.getElementById('ex-explanation').classList.remove('visible');
+  document.getElementById('ex-expl').textContent=ex.exp;
+  document.getElementById('ex-expl').classList.remove('visible');
   document.getElementById('btn-next-ex').classList.remove('visible');
-  document.getElementById('ex-options').innerHTML=ex.opts.map((o,i)=>`<div class="ex-option" onclick="checkGrammar(this,${i},${ex.correct})">${o}</div>`).join('');
+  document.getElementById('ex-options').innerHTML=ex.opts.map((o,i)=>`<div class="ex-option" onclick="checkEx(this,${i},${ex.correct})">${o}</div>`).join('');
 }
-function checkGrammar(el,idx,correct){markDone("grammar");
+function checkEx(el,idx,correct){
   document.querySelectorAll('.ex-option').forEach(o=>o.classList.add('disabled'));
-  if(idx===correct) el.classList.add('correct');
+  if(idx===correct)el.classList.add('correct');
   else{el.classList.add('wrong');document.querySelectorAll('.ex-option')[correct].classList.add('correct');}
-  document.getElementById('ex-explanation').classList.add('visible');
+  document.getElementById('ex-expl').classList.add('visible');
   document.getElementById('btn-next-ex').classList.add('visible');
+  markDone('grammar');
 }
-function nextGrammarExercise(){curExIdx++;showExercise(curExIdx);}
+function nextGrammarEx(){curExIdx++;showEx(curExIdx);}
 
 // QUIZ
-function selectQuizType(el,type){document.querySelectorAll('.quiz-type-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');quizType=type;}
+let quizType2='vocabulary';
+function selectQuizType(el,type){document.querySelectorAll('.quiz-type-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');quizType2=type;}
 function startQuiz(){
   const lv=getLevel(),bank=QUIZ_BANKS[lv]||QUIZ_BANKS['A2-B1'];
-  const pool=bank[quizType]||bank.grammar||[];
+  const pool=bank[quizType2]||bank.grammar||[];
   quizQs=[...pool].sort(()=>Math.random()-.5).slice(0,10);
   quizCur=0;quizScore=0;
   document.getElementById('quiz-start').style.display='none';
@@ -1201,8 +1059,7 @@ function showQuizQ(){
 }
 function answerQuiz(el,idx,correct){
   document.querySelectorAll('.quiz-option').forEach(o=>o.classList.add('disabled'));
-  if(idx===correct){el.classList.add('correct');quizScore++;}
-  else{el.classList.add('wrong');document.querySelectorAll('.quiz-option')[correct].classList.add('correct');}
+  if(idx===correct){el.classList.add('correct');quizScore++;}else{el.classList.add('wrong');document.querySelectorAll('.quiz-option')[correct].classList.add('correct');}
   setTimeout(()=>{quizCur++;showQuizQ();},1100);
 }
 function endQuiz(){
@@ -1210,7 +1067,7 @@ function endQuiz(){
   document.getElementById('quiz-result').classList.add('visible');
   document.getElementById('quiz-score').textContent=quizScore+'/'+quizQs.length;
   const pct=quizScore/quizQs.length*100;
-  document.getElementById('quiz-feedback-text').textContent=pct>=90?'Excellent! Ready to push to the next level.':pct>=70?'Good work! Keep practising to consolidate.':pct>=50?'Keep going! Review your vocabulary and grammar tabs.':'Do not give up — repetition is key. Try again!';
+  document.getElementById('quiz-fb-text').textContent=pct>=90?'Excellent! Ready to push to the next level.':pct>=70?'Good work! Keep practising.':pct>=50?'Keep going! Review your vocabulary and grammar.':'Do not give up — repetition is key!';
   stats.sessions++;saveData();
 }
 function resetQuiz(){document.getElementById('quiz-start').style.display='block';document.getElementById('quiz-result').classList.remove('visible');document.getElementById('quiz-active').classList.remove('visible');}
@@ -1218,67 +1075,42 @@ function resetQuiz(){document.getElementById('quiz-start').style.display='block'
 // MOCK TEST
 async function openMockTest(){
   document.getElementById('mock-overlay').classList.add('active');
-  mockSecs=3600;startMockTimer();
+  mockSecs=3600;clearInterval(mockTimer);
+  mockTimer=setInterval(()=>{mockSecs--;if(mockSecs<=0){clearInterval(mockTimer);showToast('Time is up!');}const m=Math.floor(mockSecs/60),s=mockSecs%60;document.getElementById('mock-timer-disp').textContent=m+':'+String(s).padStart(2,'0');},1000);
   const lv=getLevel();
-  document.getElementById('mock-body').innerHTML='<div style="text-align:center;padding:60px;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:14px">Generating your mock test for level '+lv+'...</p></div>';
+  document.getElementById('mock-body').innerHTML='<div style="text-align:center;padding:60px;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:14px">Generating mock test for level '+lv+'...</p></div>';
   try{
-    const res=await callClaude(`Generate an IELTS-style mock test adjusted for a student at ${lv} English level.
-Include:
-1. Reading: 250-300 word passage appropriate for ${lv} + 5 comprehension questions
-2. Writing Task 1: Describe a graph/chart prompt only
-3. Writing Task 2: Essay question appropriate for ${lv}
-4. Speaking: Part 1 (3 personal questions), Part 2 (cue card), Part 3 (3 discussion questions)
-Format ONLY as JSON: {"reading_passage":"...","reading_questions":[{"q":"...","opts":["a","b","c","d"],"correct":0}],"writing_task1":"...","writing_task2":"...","speaking_part1":["q1","q2","q3"],"speaking_part2":"cue card text","speaking_part3":["q1","q2","q3"]}`);
-    const cleanedMock=res.replace(/```json|```/g,"").trim();renderMockTest(JSON.parse(cleanedMock));
-  }catch(e){document.getElementById('mock-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error generating test. Check your API key.</div>';}
+    const res=await callClaude(`Generate an IELTS-style mock test for ${lv} level student. You MUST respond with ONLY raw JSON. No markdown. Start with { end with }. JSON: {"reading_passage":"...","reading_questions":[{"q":"...","opts":["a","b","c","d"],"correct":0}],"writing_task1":"...","writing_task2":"...","speaking_part1":["q1","q2","q3"],"speaking_part2":"cue card","speaking_part3":["q1","q2","q3"]}`);
+    let c=res.trim();if(c.startsWith('`')){c=c.replace(/^```(json)?/,'').replace(/```$/,'').trim();}
+    const si=c.indexOf('{'),ei=c.lastIndexOf('}');
+    renderMockTest(JSON.parse(c.substring(si,ei+1)));
+  }catch(e){document.getElementById('mock-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error generating test. Try again.</div>';}
 }
-
 function renderMockTest(data){
   document.getElementById('mock-body').innerHTML=`
-<div class="mock-section"><h3>📖 Part 1 — Reading</h3>
-<p>${data.reading_passage.replace(/\n/g,'</p><p>')}</p>
-${data.reading_questions.map((q,i)=>`<div style="margin-bottom:14px"><p style="font-weight:500;margin-bottom:7px">${i+1}. ${q.q}</p>${q.opts.map((o,j)=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><input type="radio" name="rq${i}" value="${j}"><label style="font-size:13px">${o}</label></div>`).join('')}</div>`).join('')}
-</div>
-<div class="mock-section"><h3>✏️ Part 2 — Writing Task 1</h3>
-<p>${data.writing_task1}</p><p style="font-size:11px;color:var(--text-muted)">Write at least 150 words &middot; 20 minutes recommended</p>
-<textarea placeholder="Write your Task 1 response..."></textarea></div>
-<div class="mock-section"><h3>✏️ Part 3 — Writing Task 2</h3>
-<p>${data.writing_task2}</p><p style="font-size:11px;color:var(--text-muted)">Write at least 250 words &middot; 40 minutes recommended</p>
-<textarea placeholder="Write your essay..." style="height:200px"></textarea></div>
+<div class="mock-section"><h3>📖 Part 1 — Reading</h3><p>${data.reading_passage.replace(/\n/g,'</p><p>')}</p>
+${data.reading_questions.map((q,i)=>`<div style="margin-bottom:14px"><p style="font-weight:500;margin-bottom:7px">${i+1}. ${q.q}</p>${q.opts.map((o,j)=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><input type="radio" name="rq${i}" value="${j}"><label style="font-size:13px">${o}</label></div>`).join('')}</div>`).join('')}</div>
+<div class="mock-section"><h3>✏️ Part 2 — Writing Task 1</h3><p>${data.writing_task1}</p><p style="font-size:11px;color:var(--text-muted)">150+ words · 20 minutes</p><textarea placeholder="Write your Task 1 response..."></textarea></div>
+<div class="mock-section"><h3>✏️ Part 3 — Writing Task 2</h3><p>${data.writing_task2}</p><p style="font-size:11px;color:var(--text-muted)">250+ words · 40 minutes</p><textarea placeholder="Write your essay..." style="height:200px"></textarea></div>
 <div class="mock-section"><h3>🗣 Part 4 — Speaking</h3>
-<p><strong>Part 1 — Personal questions:</strong></p>
-${data.speaking_part1.map(q=>`<p>&bull; ${q}</p>`).join('')}
-<p style="margin-top:14px"><strong>Part 2 — Long turn:</strong></p>
-<div style="background:var(--bg);padding:14px;border-radius:var(--radius);border:1px solid var(--border);font-size:13px;line-height:1.7">${data.speaking_part2}</div>
-<p style="margin-top:14px"><strong>Part 3 — Discussion:</strong></p>
-${data.speaking_part3.map(q=>`<p>&bull; ${q}</p>`).join('')}
+<p><strong>Part 1:</strong></p>${data.speaking_part1.map(q=>`<p>&bull; ${q}</p>`).join('')}
+<p style="margin-top:14px"><strong>Part 2 — Long turn:</strong></p><div style="background:var(--bg);padding:14px;border-radius:var(--radius);border:1px solid var(--border);font-size:13px;line-height:1.7">${data.speaking_part2}</div>
+<p style="margin-top:14px"><strong>Part 3 — Discussion:</strong></p>${data.speaking_part3.map(q=>`<p>&bull; ${q}</p>`).join('')}
 <textarea placeholder="Speaking notes (optional)..." style="margin-top:10px"></textarea></div>
 <div style="text-align:center;padding:16px 0 36px"><button class="btn-submit-mock" onclick="submitMockTest()">Submit &amp; Get Band Score &rarr;</button></div>`;
 }
-
 async function submitMockTest(){
   const tas=document.querySelectorAll('#mock-body textarea');
   const w1=tas[0]?tas[0].value:'',w2=tas[1]?tas[1].value:'';
   if(!w1&&!w2){showToast('Please write something first!');return;}
   const lv=getLevel();
-  document.getElementById('mock-body').innerHTML='<div style="text-align:center;padding:60px;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:14px">Analysing your test...</p></div>';
+  document.getElementById('mock-body').innerHTML='<div style="text-align:center;padding:60px;color:var(--text-muted)"><div class="typing-indicator" style="justify-content:center"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><p style="margin-top:12px;font-size:14px">Analysing...</p></div>';
   try{
-    const fb=await callClaude(`You are an IELTS examiner. The student is currently at ${lv} English level, targeting C1-C2.
-Evaluate these writing responses:
+    const fb=await callClaude(`You are an IELTS examiner. Student is at ${lv} level.
 TASK 1: ${w1||'Not completed'}
 TASK 2: ${w2||'Not completed'}
-
-Provide:
-1. IELTS Band Score (e.g. 4.5, 5.0, 5.5, 6.0) — be REALISTIC, not generous
-2. Task Achievement
-3. Coherence & Cohesion
-4. Lexical Resource
-5. Grammatical Range & Accuracy
-6. 5 specific improvements for next time
-7. What was good
-8. Whether ready to move to next level from ${lv}
-
-IMPORTANT: Start your response with exactly "BAND: X.X" on the first line so the score can be extracted.`);
+Provide: 1. Band score 2. Task Achievement 3. Coherence & Cohesion 4. Lexical Resource 5. Grammar 6. 5 improvements 7. What was good 8. Ready for next level?
+Start your response with "BAND: X.X" on the first line.`);
     const bm=fb.match(/BAND:\s*(\d+\.?\d*)/i);
     const band=bm?parseFloat(bm[1]):null;
     const prevLv=getLevel();
@@ -1288,104 +1120,45 @@ IMPORTANT: Start your response with exactly "BAND: X.X" on the first line so the
       stats.mockTests.push(entry);
       checkLevelChange(band);
       const newLv=getLevel();
-      if(newLv!==prevLv) stats.mockTests[stats.mockTests.length-1].levelChange=newLv;
+      if(newLv!==prevLv)stats.mockTests[stats.mockTests.length-1].levelChange=newLv;
       localStorage.setItem('em_last_mock',Date.now().toString());
       saveData();renderMockHistory();
     }
-    document.getElementById('mock-body').innerHTML=`
-<div style="max-width:700px;margin:0 auto;padding:20px 0">
-<h3 style="font-size:16px;margin-bottom:18px">📊 Mock Test Results</h3>
-${band?`<div style="text-align:center;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);padding:20px;margin-bottom:20px"><div style="font-size:36px;font-weight:600;color:var(--accent)">Band ${band.toFixed(1)}</div><div style="font-size:13px;color:var(--text-muted);margin-top:4px">IELTS Estimated Score</div></div>`:''}
+    document.getElementById('mock-body').innerHTML=`<div style="max-width:700px;margin:0 auto;padding:20px 0">
+<h3 style="font-size:16px;margin-bottom:18px">📊 Results</h3>
+${band?`<div style="text-align:center;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius);padding:20px;margin-bottom:20px"><div style="font-size:36px;font-weight:600;color:var(--accent)">Band ${band.toFixed(1)}</div></div>`:''}
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;font-size:13px;line-height:1.8">${fb.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>
 <div style="text-align:center;margin-top:20px"><button class="btn-submit-mock" onclick="closeMockTest()">Back to Study &rarr;</button></div></div>`;
-  }catch(e){document.getElementById('mock-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error. Please try again.</div>';}
+  }catch(e){document.getElementById('mock-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error. Try again.</div>';}
 }
-
 function closeMockTest(){document.getElementById('mock-overlay').classList.remove('active');clearInterval(mockTimer);}
-function startMockTimer(){clearInterval(mockTimer);mockTimer=setInterval(()=>{mockSecs--;if(mockSecs<=0){clearInterval(mockTimer);showToast('Time is up!');}const m=Math.floor(mockSecs/60),s=mockSecs%60;document.getElementById('mock-timer').textContent=m+':'+String(s).padStart(2,'0');},1000);}
 
-function checkMockTestDue(){
-  const last=parseInt(localStorage.getItem('em_last_mock')||'0');
-  document.getElementById('mock-banner').style.display=(Date.now()-last>14*24*60*60*1000&&last>0)?'flex':'none';
-}
-
-function markDone(section){
-  const item=document.getElementById('plan-'+section);
-  if(item&&!item.classList.contains('done')){
-    item.classList.add('done');
-    const ch=document.getElementById('pc-'+section);
-    if(ch)ch.innerHTML='&#10003;';
-    const done=document.querySelectorAll('.plan-item.done').length,pct=Math.round(done/5*100);
-    document.getElementById('dash-progress-bar').style.width=pct+'%';
-    document.getElementById('dash-progress-pct').textContent=pct+'%';
-    showToast(section.charAt(0).toUpperCase()+section.slice(1)+' done! ✅');
+function checkLevelChange(band){
+  const cur=getLevel(),idx=LEVELS.indexOf(cur);
+  let next=cur;
+  if(band>=7.5&&idx<5)next='C1-C2';else if(band>=6.5&&idx<4)next='C1';else if(band>=6.0&&idx<3)next='B2-C1';else if(band>=5.0&&idx<2)next='B2';else if(band>=4.0&&idx<1)next='B1-B2';else if(band<3.5&&idx>0)next=LEVELS[idx-1];
+  if(next!==cur){
+    const up=LEVELS.indexOf(next)>idx;
+    document.getElementById('lu-icon').textContent=up?'🎉':'💪';
+    document.getElementById('lu-title').textContent=up?'Level Up!':'Keep Consolidating!';
+    document.getElementById('lu-from').textContent=cur;
+    document.getElementById('lu-to').textContent=next;
+    document.getElementById('lu-msg').textContent=up?'Your mock test shows real progress! Content is now adjusted to your new level.':'Based on results, lets consolidate this level more. This is the fastest path forward.';
+    document.getElementById('levelup-modal').classList.add('active');
+    stats.currentLevel=next;saveData();updateAllUI();
   }
 }
+function closeLevelUp(){document.getElementById('levelup-modal').classList.remove('active');}
 
+// API
 async function callClaude(userMsg,system='',history=[]){
   const messages=[...history,{role:'user',content:userMsg}];
   const body={model:'claude-sonnet-4-6',max_tokens:1000,messages};
-  if(system) body.system=system;
+  if(system)body.system=system;
   const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
-  if(!res.ok) throw new Error('API error '+res.status);
+  if(!res.ok)throw new Error('API error '+res.status);
   const data=await res.json();
   return data.content[0].text;
-}
-
-// FLASH CARDS
-let fcIndex=0,fcShowing=false,fcWords=[];
-function startFlashCards(){
-  fcWords=[...vocab].sort(()=>Math.random()-.5);
-  if(!fcWords.length){showToast('No words in dictionary yet!');return;}
-  fcIndex=0;fcShowing=false;
-  document.getElementById('vocab-list').style.display='none';
-  document.getElementById('flashcard-area').style.display='block';
-  renderFlashCard();
-}
-function renderFlashCard(){
-  const area=document.getElementById('flashcard-area');
-  if(!fcWords.length){area.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:13px;">No words saved yet.</p>';return;}
-  const w=fcWords[fcIndex];
-  area.innerHTML=`
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-      <button onclick="exitFlashCards()" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;color:var(--text-muted);font-family:Inter,sans-serif;">✕ Exit cards</button>
-      <span class="fc-counter">${fcIndex+1} / ${fcWords.length}</span>
-      <button onclick="speakText('${w.word}')" style="padding:5px 12px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">🔊</button>
-    </div>
-    <div class="flashcard" onclick="revealCard(this)">
-      <div class="fc-word">${w.word}</div>
-      <div class="fc-hint">Tap to reveal meaning</div>
-      <div class="fc-answer" id="fc-ans">
-        ${w.tr?'<div style="font-size:16px;font-weight:500;color:var(--amber);margin-bottom:6px;">'+w.tr+'</div>':''}
-        ${w.def?'<div style="font-size:13px;color:var(--text-muted);">'+w.def+'</div>':''}
-        ${w.ex?'<div style="font-size:12px;font-style:italic;color:var(--text-light);margin-top:8px;">"'+w.ex+'"</div>':''}
-      </div>
-    </div>
-    <div class="fc-nav">
-      <button onclick="fcNav(-1)" style="padding:8px 20px;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;" ${fcIndex===0?'disabled':''}>← Prev</button>
-      <button onclick="fcNav(1)" style="padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;">${fcIndex===fcWords.length-1?'Restart ↺':'Next →'}</button>
-    </div>`;
-}
-function revealCard(el){
-  const ans=document.getElementById('fc-ans');
-  const hint=el.querySelector('.fc-hint');
-  if(ans.style.display==='none'||ans.style.display===''){
-    ans.style.display='block';
-    if(hint) hint.style.display='none';
-  }
-}
-function fcNav(dir){
-  fcIndex+=dir;
-  if(fcIndex>=fcWords.length) fcIndex=0;
-  if(fcIndex<0) fcIndex=fcWords.length-1;
-  renderFlashCard();
-}
-function exitFlashCards(){
-  document.getElementById('flashcard-area').style.display='none';
-  document.getElementById('vocab-list').style.display='flex';
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.filter-btn').classList.add('active');
-  loadVocabList('all');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}

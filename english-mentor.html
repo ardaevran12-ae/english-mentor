@@ -938,7 +938,7 @@ Language level: ${lv}. ${lvInstr[lv]}
 Length: 350-450 words.
 Format ONLY as JSON (no other text): {"title":"...","paragraphs":["p1","p2","p3","p4"],"highlight_words":["w1","w2","w3","w4","w5"]}
 highlight_words = 5 useful vocabulary words from the passage appropriate for ${lv} level learners.`);
-    const data=JSON.parse(res);
+    const cleaned=res.replace(/```json|```/g,"").trim();const data=JSON.parse(cleaned);
     document.getElementById('reading-title').textContent=data.title;
     document.getElementById('fs-title').textContent=data.title;
     let html=`<h2>${data.title}</h2>`;
@@ -1163,7 +1163,7 @@ Include:
 3. Writing Task 2: Essay question appropriate for ${lv}
 4. Speaking: Part 1 (3 personal questions), Part 2 (cue card), Part 3 (3 discussion questions)
 Format ONLY as JSON: {"reading_passage":"...","reading_questions":[{"q":"...","opts":["a","b","c","d"],"correct":0}],"writing_task1":"...","writing_task2":"...","speaking_part1":["q1","q2","q3"],"speaking_part2":"cue card text","speaking_part3":["q1","q2","q3"]}`);
-    renderMockTest(JSON.parse(res));
+    const cleanedMock=res.replace(/```json|```/g,"").trim();renderMockTest(JSON.parse(cleanedMock));
   }catch(e){document.getElementById('mock-body').innerHTML='<div style="padding:40px;text-align:center;color:var(--red)">Error generating test. Check your API key.</div>';}
 }
 
